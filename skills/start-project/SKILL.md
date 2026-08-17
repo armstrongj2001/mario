@@ -15,18 +15,40 @@ Design is not handled here — `/impeccable` owns that end to end. This skill ow
 
 ---
 
+## Running the gate
+
+These hold for every phase, without being asked:
+
+- **Create nothing before Phase 3 approval.** No directory, no `package.json`, no `git init`, no
+  "quick scaffold to hold things." If you are about to write, stop and say so instead. This is not
+  waivable by `--auto`, by urgency, or by the user seeming impatient.
+- **Announce each phase as you enter it**, and announce every agent handoff (`@architect`,
+  `@implementer`, …) as it happens, so the chain is visible while it runs.
+- **Answer from the prompt before asking.** A good brief already contains most of Phase 1 — extract
+  what is there, reflect it back for confirmation, and ask only about what is genuinely missing.
+  Re-asking what the user already told you is the fastest way to make this feel like a form.
+- **Never skip Phase 2.** Design context is not optional, and not something to substitute your own
+  taste for.
+- **Do not reproduce copyrighted material.** Reference the structure and pacing of existing
+  products; write original content.
+
+---
+
 ## Phase 1 — Intent
 
-Write nothing yet. Not a folder, not a `package.json`, not a "quick prototype".
-A pasted roadmap is **input**, not approval — roadmaps list features, never who it is for or
-what it must not become.
+Write nothing yet. A pasted brief or roadmap is **input**, not approval — briefs describe features
+and feel, rarely who it is for or what it must not become.
 
-Say: *"Running kickoff gate — four questions before any code."* Then ask, in one batch:
+Extract from what the user already gave you, then confirm and fill gaps. The four things you need:
 
 1. **What is it?** One sentence a stranger would understand.
 2. **Who opens it, and what do they do in the first 30 seconds?**
 3. **What does it explicitly NOT do?** ← the scope boundary. Force a real answer.
 4. **Success looks like…?** A screenshot, signups, a demo?
+
+Ask only for what the brief did not already answer. **Q3 is almost never in a brief** — people
+describe what they want, not what they are refusing. Expect to ask it, and expect the first answer
+to be vague. Push once with a concrete wrong-direction guess.
 
 Q3 is the one that prevents building the wrong thing. If the answer is vague, ask again with a
 concrete wrong-direction guess: *"So it is not just a feed of your GitHub repos?"*
