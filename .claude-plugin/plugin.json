@@ -1,7 +1,7 @@
 {
   "name": "mario",
   "description": "Engineering discipline for AI coding agents: a kickoff gate that blocks code until scope is settled, and a plan → build → review chain where each agent is restricted to what its job needs.",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "armstrongj2001"
   },

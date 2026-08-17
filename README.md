@@ -62,14 +62,18 @@ bash ~/mario/scripts/link.sh
 ## The flow
 
 ```
-/start-project        1. what is it · who · what it does NOT do · success
-                      2. → design context
-                      3. go/no-go gate  ← cannot be waived
-@architect            plan: files, signatures, edge cases, checkpoint test
-@implementer          build the plan exactly
-@code-reviewer        correctness, security, duplication
-@scribe               persist decisions and corrections
+/start-project    1. what is it · who · what it does NOT do · success
+                  2. → design context
+                  3. go/no-go gate  ← cannot be waived; names the deploy target
+                  4. scaffold · .env · README · git · private remote · notes
+@architect        plan: files, signatures, edge cases, checkpoint test
+@implementer      build the plan exactly
+@code-reviewer    correctness, security, duplication
+@scribe           persist decisions and corrections
 ```
+
+Nothing is written to disk until step 3 is approved. Everything in step 4 then runs without
+further prompting — approval covers the whole setup.
 
 The **NOT list** in step 1 is the load-bearing part. "What does this explicitly not do?" is the
 question that prevents building the wrong product, and it's the one nobody asks.
@@ -102,7 +106,7 @@ bash scripts/link.sh --unlink   # remove
 
 ## Status
 
-**v0.2.0 — early.** The structure is verified: agents register, frontmatter parses, tool
+**v0.3.0 — early.** The structure is verified: agents register, frontmatter parses, tool
 restrictions apply at load time. Real-world results across many projects are still being gathered.
 Issues and PRs welcome.
 

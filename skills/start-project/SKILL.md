@@ -105,6 +105,33 @@ Ask for explicit go/no-go.
 
 ---
 
+## Phase 4 — Project Setup
+
+Runs once, immediately after approval, before any feature work. Do not ask permission for these
+steps individually — approval at Phase 3 covers them. Report the results as one block at the end.
+
+1. **Scaffold** the agreed stack in the agreed directory.
+2. **`.gitignore`** for the stack, plus `.env` (never committed) and a committed `.env.example`
+   listing every key with placeholder values. Secrets live in `.env` only — never hardcoded,
+   never committed.
+3. **`README.md`** — what it is, how to run it locally, how to deploy. Written for someone
+   returning in six months with no memory of it.
+4. **`CLAUDE.md`** — project-specific instructions. Mirror to `AGENTS.md` when other tools are in
+   play; keep them identical rather than letting them drift.
+5. **`git init`**, then a first commit containing the scaffold only.
+6. **Create the remote** — `gh repo create <name> --private --source=. --remote=origin --push`.
+   **Private unless the user explicitly asked for public.**
+7. **Obsidian** — create `<Project Name>/` in the vault root
+   (`/mnt/c/Users/jobid/OneDrive/Documents/X posts/`) with an index note holding the one-liner,
+   the NOT list, the repo URL, the local path, and the deploy target.
+   > The vault is under OneDrive. Never run recursive scans (`find`, `grep -r`, `rg`, `ls -R`,
+   > `du`) against that path from WSL — it hydrates cloud placeholders and fills the C: drive.
+   > Use `powershell.exe -NoProfile -Command "Get-ChildItem ..."` for discovery. Reading and
+   > writing individual known files is fine.
+8. **Report** the repo URL, local path, and vault path together.
+
+---
+
 ## After the Gate
 
 ```
