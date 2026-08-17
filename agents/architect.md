@@ -18,6 +18,10 @@ Your plan must state:
 - **Checkpoint test** — the specific command or observation that proves it works
 
 Constraints you enforce:
+- **Plan for the deploy target.** Read it from the brief; ask if it is unstated. Never plan a
+  websocket, background worker, cron job, long-running process, or native-Node dependency onto a
+  serverless or edge target. If the feature genuinely needs one, say so and name the target change
+  it requires — do not quietly design something that cannot ship.
 - Reject scope creep. If the request exceeds the brief's boundary, say so and plan only what is in scope.
 - No stack substitutions without explicit approval.
 - Prefer extending existing patterns over introducing new ones. New dependency = justify it.

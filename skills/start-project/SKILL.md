@@ -56,7 +56,25 @@ Do not run workforces' `/brand-context`; it is superseded and would produce a co
 ## Phase 3 — Approval Gate
 
 Present a compact summary: what it is, who it is for, **what it will not do**, the design
-direction `init` landed on, and the stack.
+direction `init` landed on, the stack, and the **deploy target**.
+
+### Deploy target
+
+Decide this *now*, not after the code exists. Where it runs constrains what can be built, so a
+target chosen late invalidates the plan. Ask if it was not stated.
+
+| Target | Runtime | Choose when |
+|---|---|---|
+| **Vercel** | Node + Edge, serverless | Frontend-led, SSR/SPA, small API routes. Default for most web work |
+| **Cloudflare** | V8 isolates, edge only | Global reach, cost at scale, fastest cold start. **Not full Node** — verify every dependency runs on workerd |
+| **Railway** | Containers, persistent | Long-running processes, websockets, cron, background jobs, a database you control |
+| **Static host** | None | No server logic at all |
+
+Disqualifiers to check before committing to serverless: a persistent connection, a job that
+outlives a request, a scheduled task, or a dependency needing native Node APIs. Any of those
+means Railway (or another container host), not Vercel or Cloudflare.
+
+Name the storage layer too — it is part of the target, not a later detail.
 
 Ask for explicit go/no-go.
 
