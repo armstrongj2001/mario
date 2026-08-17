@@ -46,7 +46,7 @@ bash ~/mario/scripts/link.sh
 
 | Agent | Model | Tools | Job |
 |---|---|---|---|
-| `@architect` | fable | Read, Grep, Glob | Plans. **Cannot write files.** |
+| `@architect` | sonnet | Read, Grep, Glob | Plans. **Cannot write files.** |
 | `@implementer` | opus | + Write, Edit, Bash | Executes plans exactly. Won't redesign mid-flight. |
 | `@code-reviewer` | sonnet | Read, Grep, Glob, Bash | Correctness, security, plan compliance, duplication |
 | `@design-pilot` | fable | + WebFetch | Visual direction from real references, never imagination |
