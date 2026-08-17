@@ -106,7 +106,7 @@ bash scripts/link.sh --unlink   # remove
 
 ## Status
 
-**v0.3.1 — early.** The structure is verified: agents register, frontmatter parses, tool
+**v0.4.0 — early.** The structure is verified: agents register, frontmatter parses, tool
 restrictions apply at load time. Real-world results across many projects are still being gathered.
 Issues and PRs welcome.
 

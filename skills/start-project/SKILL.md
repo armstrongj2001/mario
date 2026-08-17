@@ -78,7 +78,8 @@ Do not run workforces' `/brand-context`; it is superseded and would produce a co
 ## Phase 3 — Approval Gate
 
 Present a compact summary: what it is, who it is for, **what it will not do**, the design
-direction `init` landed on, the stack, and the **deploy target**.
+direction `init` landed on, the stack, the **deploy target**, and the **absolute path** the project
+will be created at.
 
 ### Deploy target
 
@@ -110,7 +111,21 @@ Ask for explicit go/no-go.
 Runs once, immediately after approval, before any feature work. Do not ask permission for these
 steps individually — approval at Phase 3 covers them. Report the results as one block at the end.
 
-1. **Scaffold** the agreed stack in the agreed directory.
+1. **Establish the working directory**, then scaffold the agreed stack inside it. Everything the
+   project owns lives under this one root — never scatter files into a parent, a home directory,
+   or whatever the shell happened to be sitting in.
+
+   Resolve it in this order:
+   - The path the user named. Use it.
+   - The current directory, **only if** it is empty or already this project's root. A directory
+     holding unrelated work is never the answer.
+   - Otherwise **create one named after the project** — kebab-case, derived from the product name
+     (`Sleep Stories` → `sleep-stories/`), as a sibling of the user's other projects rather than
+     nested inside an unrelated repo.
+
+   Confirm the absolute path at Phase 3 and state it again before the first write. Never create a
+   project root inside another project's working tree, and never scaffold into a directory that
+   already contains a `.git` you did not just create.
 2. **`.gitignore`** for the stack, plus `.env` (never committed) and a committed `.env.example`
    listing every key with placeholder values. Secrets live in `.env` only — never hardcoded,
    never committed.
