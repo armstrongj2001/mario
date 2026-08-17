@@ -5,8 +5,6 @@
 A kickoff gate that blocks code until scope is settled, and a `plan → build → review` chain where
 each agent is restricted to what its job actually needs.
 
-> Named for the plumber, after [spotify/luigi](https://github.com/spotify/luigi) took the other one.
-
 ---
 
 ## Why
@@ -104,7 +102,7 @@ bash scripts/link.sh --unlink   # remove
 
 ## Status
 
-**v0.1.0 — early.** The structure is verified: agents register, frontmatter parses, tool
+**v0.1.1 — early.** The structure is verified: agents register, frontmatter parses, tool
 restrictions apply at load time. Real-world results across many projects are still being gathered.
 Issues and PRs welcome.
 
