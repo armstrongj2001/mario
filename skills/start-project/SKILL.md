@@ -128,7 +128,22 @@ steps individually — approval at Phase 3 covers them. Report the results as on
    > `du`) against that path from WSL — it hydrates cloud placeholders and fills the C: drive.
    > Use `powershell.exe -NoProfile -Command "Get-ChildItem ..."` for discovery. Reading and
    > writing individual known files is fine.
-8. **Report** the repo URL, local path, and vault path together.
+8. **Offer to open it.** Ask which editor unless the user has a configured preference — check
+   their global instructions first and just use it if one is set. Do not open anything without
+   asking or a standing preference; a window stealing focus mid-session is worse than a question.
+
+   | Editor | Command |
+   |---|---|
+   | VS Code | `code <path>` |
+   | Vim / Neovim | `vim <path>` / `nvim <path>` |
+   | Other GUI editor | its own CLI |
+
+   On WSL with a Windows-side editor, the folder must open **as a remote WSL workspace**, not via
+   a `\\wsl.localhost\...` path — otherwise tooling, terminals, and file watching all run on the
+   wrong side. Some editors need an explicit remote flag for this. If the user's global
+   instructions record the exact command, use it verbatim.
+
+9. **Report** the repo URL, local path, and vault path together.
 
 ---
 
