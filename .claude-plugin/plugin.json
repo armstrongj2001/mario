@@ -1,0 +1,12 @@
+{
+  "name": "mario",
+  "description": "Engineering discipline for AI coding agents: a kickoff gate that blocks code until scope is settled, and a plan → build → review chain where each agent is restricted to what its job needs.",
+  "version": "0.1.0",
+  "author": {
+    "name": "armstrongj2001"
+  },
+  "license": "MIT",
+  "keywords": ["agents", "workflow", "code-review", "architecture", "planning", "pipeline"],
+  "repository": "https://github.com/armstrongj2001/mario",
+  "skills": "./skills/"
+}

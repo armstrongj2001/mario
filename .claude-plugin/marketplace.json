@@ -1,0 +1,23 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "mario",
+  "metadata": {
+    "description": "Engineering discipline for AI coding agents — a kickoff gate and a plan → build → review chain with enforced role boundaries."
+  },
+  "owner": {
+    "name": "armstrongj2001"
+  },
+  "plugins": [
+    {
+      "name": "mario",
+      "description": "A kickoff gate that blocks code until scope is settled, and a plan → build → review chain where each agent is restricted to what its job needs.",
+      "version": "0.1.0",
+      "author": {
+        "name": "armstrongj2001"
+      },
+      "source": "./",
+      "category": "workflow",
+      "tags": ["agents", "planning", "code-review", "architecture"]
+    }
+  ]
+}
