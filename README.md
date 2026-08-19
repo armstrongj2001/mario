@@ -28,6 +28,27 @@ Three principles, and everything else follows:
    accuracy loss comes from matching model to task, not from one model rushing everything.
 3. **Review by a different model than authored the code.** Fresh eyes aren't invested in the work.
 
+## How it's laid out
+
+The method is plain prose in files no harness owns. Everything else points at it.
+
+```
+METHOD.md      ← the six phases. Platform-neutral. The single source.
+roles/*.md     ← the five roles, in prose. Also the source.
+AGENTS.md      ← portable entry — Codex, Cursor, Gemini, Grok
+agents/*.md    ← Claude Code binding: frontmatter + a pointer. 13 lines each.
+skills/ commands/  ← Claude Code skill and slash-command wiring
+```
+
+No file restates another, so there is nothing to regenerate and nothing to drift. Editing the
+method means editing `METHOD.md`, once.
+
+**What survives the port:** the phases, the gate, the NOT list, the first-run check — all prose,
+all portable. **What doesn't:** per-role tool restriction. Claude Code and Antigravity spawn the
+architect with no write tools, so it *cannot* produce code. Codex and Cursor have one agent with
+one toolset, where that becomes a rule the model is asked to follow. Same words, weaker guarantee —
+`AGENTS.md` says so plainly rather than implying the enforcement travels.
+
 ## Install
 
 ```
@@ -97,10 +118,25 @@ and pairs with tools that do:
   concept every run.
 - Any workflow/GitHub toolkit for backlog and planning, installed per-project after the gate.
 
+## Using it with Codex, Cursor, or Grok
+
+Phase 4 sets each project up for this automatically: a gitignored `.mario` symlink at the project
+root and a committed three-line `AGENTS.md` pointing into it. A symlink, never a copy — a copy
+stops hearing about edits the day it is made.
+
+Manually, in any project:
+
+```bash
+ln -s ~/antigravity/mario .mario && echo ".mario" >> .gitignore
+```
+
+Then point the tool at `.mario/AGENTS.md`.
+
 ## Customizing
 
-Everything is a Markdown file with YAML frontmatter. Edit `agents/*.md` to change a role, its
-model, or its tools. If you symlinked, changes are live immediately.
+To change *what a role does*, edit `roles/<name>.md` — one file, every harness.
+To change *how Claude Code runs it*, edit `agents/<name>.md`: its model, or its tools.
+If you symlinked, changes are live immediately.
 
 Changing `tools:` changes what an agent *can* do, not just what it's told to do — that's the point.
 Adding `Write` to `@architect` removes the guarantee.
@@ -113,7 +149,7 @@ bash scripts/link.sh --unlink   # remove
 
 ## Status
 
-**v0.5.0 — early.** The structure is verified: agents register, frontmatter parses, tool
+**v0.6.0 — early.** The structure is verified: agents register, frontmatter parses, tool
 restrictions apply at load time. Real-world results across many projects are still being gathered.
 Issues and PRs welcome.
 
