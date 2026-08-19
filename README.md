@@ -49,46 +49,53 @@ bash ~/mario/scripts/link.sh
 | `@architect` | sonnet | Read, Grep, Glob | Plans. **Cannot write files.** |
 | `@implementer` | opus | + Write, Edit, Bash | Executes plans exactly. Won't redesign mid-flight. |
 | `@code-reviewer` | sonnet | Read, Grep, Glob, Bash | Correctness, security, plan compliance, duplication |
-| `@design-pilot` | fable | + WebFetch | Visual direction from real references, never imagination |
-| `@design-reviewer` | sonnet | Read, Grep, Glob | Gates UI before the user sees it |
 | `@project-manager` | sonnet | + Bash, Write | Backlog, prioritization, GitHub issues |
 | `@scribe` | haiku | Read, Grep, Write | Persists decisions and corrections |
 
 | Command | Job |
 |---|---|
-| `/start-project` | Kickoff gate — intent, scope, design context, explicit go/no-go before any code |
+| `/start-project` | Kickoff gate — intent, scope, design, go/no-go, and a running localhost build a person can use |
 | `/seeya` | Wind-down — persist facts, write the session note, surface loose ends, hand off |
 
 ## The flow
 
 ```
-/start-project    1. what is it · who · what it does NOT do · success
-                  2. → design context
-                  3. go/no-go gate  ← cannot be waived; names the deploy target
+/start-project    1. what is it · who · what it does NOT do · success · the real usage scenario
+                  2. → design, handed to /impeccable end to end (the user locks a direction)
+                  3. go/no-go gate  ← cannot be waived
                   4. scaffold · .env · README · git · private remote · notes
 @architect        plan: files, signatures, edge cases, checkpoint test
 @implementer      build the plan exactly
 @code-reviewer    correctness, security, duplication
+                  5. FIRST RUN — localhost, real viewport, real scenario  ← blocks the reveal
+                  6. deploy target, chosen once something runs
 @scribe           persist decisions and corrections
 ```
 
 Nothing is written to disk until step 3 is approved. Everything in step 4 then runs without
 further prompting — approval covers the whole setup.
 
-The **NOT list** in step 1 is the load-bearing part. "What does this explicitly not do?" is the
-question that prevents building the wrong product, and it's the one nobody asks.
+Two steps are load-bearing.
+
+The **NOT list** in step 1 is the question that prevents building the wrong product, and it's the
+one nobody asks.
+
+**Step 5** is the one every other toolkit is missing. Craft reviews ask whether a surface is
+distinctive, committed, contrast-correct, and free of AI clichés. None of them asks whether a
+person can use it — so a screen with an invisible input and no buttons passes a clean sheet. Step 5
+opens the app at the size and hour it will actually be used, and any "no" is a blocker.
 
 ## Composes with
 
 mario owns engineering discipline only. It deliberately doesn't do design or project management,
 and pairs with tools that do:
 
-- **[impeccable](https://github.com/pbakaus/impeccable)** — design. `/start-project` hands off to
-  `/impeccable init` for design context, and `/impeccable audit` gates surfaces before reveal.
-  With it installed, retire `@design-pilot` and `@design-reviewer`.
-- Any workflow/GitHub toolkit for backlog and planning.
-
-Neither is required. Without them, the included design agents cover the gap.
+- **[impeccable](https://github.com/pbakaus/impeccable)** — all design, end to end. Phase 2 hands
+  the project over: `init` for product truth, then the direction round, which serves a decision
+  page on localhost where the *user* locks a visual direction dealt from a seeded catalog. mario
+  ships no design agent of its own, deliberately — a single model's taste converges on the same
+  concept every run.
+- Any workflow/GitHub toolkit for backlog and planning, installed per-project after the gate.
 
 ## Customizing
 
@@ -106,7 +113,7 @@ bash scripts/link.sh --unlink   # remove
 
 ## Status
 
-**v0.4.0 — early.** The structure is verified: agents register, frontmatter parses, tool
+**v0.5.0 — early.** The structure is verified: agents register, frontmatter parses, tool
 restrictions apply at load time. Real-world results across many projects are still being gathered.
 Issues and PRs welcome.
 

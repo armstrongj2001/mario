@@ -1,17 +1,18 @@
 ---
 name: start-project
-description: Mandatory kickoff gate for any new project, app, site, or major greenfield feature. Establishes intent and scope, hands design context to /impeccable init, and requires explicit approval before any code. Use when starting a new project, scaffolding a repo, building a new site or app, or when the user says start a project, new project, build me a, or pastes a roadmap.
+description: Mandatory kickoff gate for any new project, app, site, or major greenfield feature. Establishes intent and scope, hands design to /impeccable, gates on a running localhost build a person can actually use, and requires explicit approval before any code. Use when starting a new project, scaffolding a repo, building a new site or app, or when the user says start a project, new project, build me a, or pastes a roadmap.
 ---
 
 # start-project — Kickoff Gate
 
-Greenfield work fails two ways: building the wrong product, and building the right product ugly.
-Both come from writing code before the target is defined.
+Greenfield work fails three ways: building the wrong product, building the right product ugly, and
+building something beautiful that nobody can operate. The first two come from writing code before
+the target is defined. The third comes from never opening the thing.
 
-Three phases. **No scaffolding, no dependencies, no components until Phase 3 is signed off.**
+Six phases. **No scaffolding, no dependencies, no components until Phase 3 is signed off.**
 
 Design is not handled here — `/impeccable` owns that end to end. This skill owns *intent*,
-*scope*, and the *gate*.
+*scope*, the *gate*, and the *first run*.
 
 ---
 
@@ -27,8 +28,10 @@ These hold for every phase, without being asked:
 - **Answer from the prompt before asking.** A good brief already contains most of Phase 1 — extract
   what is there, reflect it back for confirmation, and ask only about what is genuinely missing.
   Re-asking what the user already told you is the fastest way to make this feel like a form.
-- **Never skip Phase 2.** Design context is not optional, and not something to substitute your own
-  taste for.
+- **Never skip Phase 2, and never run only part of it.** `/impeccable init` is the first step of
+  the design arc, not the whole of it.
+- **Never call it done on a passing review.** Craft reviews measure whether a surface is good.
+  Only Phase 5 measures whether a person can use it, and it is the one that has been skipped.
 - **Do not reproduce copyrighted material.** Reference the structure and pacing of existing
   products; write original content.
 
@@ -48,56 +51,59 @@ Extract from what the user already gave you, then confirm and fill gaps. The fou
 
 Ask only for what the brief did not already answer. **Q3 is almost never in a brief** — people
 describe what they want, not what they are refusing. Expect to ask it, and expect the first answer
-to be vague. Push once with a concrete wrong-direction guess.
-
-Q3 is the one that prevents building the wrong thing. If the answer is vague, ask again with a
-concrete wrong-direction guess: *"So it is not just a feed of your GitHub repos?"*
+to be vague. Push once with a concrete wrong-direction guess: *"So it is not just a feed of your
+GitHub repos?"*
 
 Record the **NOT list** verbatim. Every later scope question is settled against it.
 
+Capture the **real usage scenario** with it — where the user is, on what device, at what hour, in
+what state of mind. Phase 5 tests against that scenario, so a vague answer here produces a build
+verified in conditions nobody will ever be in.
+
 ---
 
-## Phase 2 — Design Context
+## Phase 2 — Design
 
-Run **`/impeccable init`**.
+`/impeccable` owns design end to end. Hand the project over and let it run its **whole arc**. Do
+not stop after `init`, and do not cherry-pick commands.
 
-It asks whether the surface is brand (marketing, landing, portfolio) or product (app UI,
-dashboard, tool), then writes `PRODUCT.md` and `DESIGN.md` — audience, voice, anti-references,
-color, type, components. Every later `/impeccable` command reads them.
+1. **`/impeccable init`** — writes `PRODUCT.md`: users, purpose, positioning, constraints, stack.
+   By design it does **not** invent a visual world and does not write `DESIGN.md`.
+2. **The direction round** — ask Impeccable, in plain words, to design the surface ("design the
+   first screen of <product>"). That is what routes into its `new-work` flow: it rolls an external
+   seed, deals candidate directions plus outside challengers, and serves a **decision page on
+   localhost** — one card per direction with thesis, palette, materials, first viewport, honest
+   risk, and a generated comp. Open the URL for the user.
 
-Feed it the Phase 1 answers, especially the NOT list, so its anti-references match.
+   **The user locks a card. You do not pick for them.** They may re-roll, or steer *safer* /
+   *bolder*. Record the seed; it reproduces the entire round.
+3. **Whatever `init` recommends next**, and the rest of the arc through the build — `audit`,
+   `critique`, `polish`, `onboard` for first-run and empty states.
 
-Do not substitute your own taste for this step, and do not skip it because the project is
-"internal" or "just a tool". If the user supplies reference sites they admire, pass them through —
-`init` turns references into tokens far better than prose does.
+Feed Phase 1's answers in, especially the NOT list — it becomes Impeccable's anti-references. If
+the user supplies reference sites they admire, pass them through; `init` turns references into
+tokens far better than prose does.
 
-Do not run workforces' `/brand-context`; it is superseded and would produce a competing brand file.
+Skipping the roll is how every project in a category ships the same design. Do not substitute your
+own taste, and do not skip because the project is "internal" or "just a tool".
+
+Do not run workforces' `/brand-context` or `@design-pilot`; both are superseded and would produce a
+competing brand file.
 
 ---
 
 ## Phase 3 — Approval Gate
 
-Present a compact summary: what it is, who it is for, **what it will not do**, the design
-direction `init` landed on, the stack, the **deploy target**, and the **absolute path** the project
-will be created at.
+Present a compact summary:
 
-### Deploy target
+- What it is, who it is for, and **what it will not do**.
+- The **direction the user locked**, named, with its seed.
+- The stack, and the **absolute path** the project will be created at.
+- **How it will run locally** — the dev command and the port.
 
-Decide this *now*, not after the code exists. Where it runs constrains what can be built, so a
-target chosen late invalidates the plan. Ask if it was not stated.
-
-| Target | Runtime | Choose when |
-|---|---|---|
-| **Vercel** | Node + Edge, serverless | Frontend-led, SSR/SPA, small API routes. Default for most web work |
-| **Cloudflare** | V8 isolates, edge only | Global reach, cost at scale, fastest cold start. **Not full Node** — verify every dependency runs on workerd |
-| **Railway** | Containers, persistent | Long-running processes, websockets, cron, background jobs, a database you control |
-| **Static host** | None | No server logic at all |
-
-Disqualifiers to check before committing to serverless: a persistent connection, a job that
-outlives a request, a scheduled task, or a dependency needing native Node APIs. Any of those
-means Railway (or another container host), not Vercel or Cloudflare.
-
-Name the storage layer too — it is part of the target, not a later detail.
+The deploy target is **not** decided here. Nothing has been built, so nothing constrains the choice
+yet, and picking a host before there is a running app narrows the design for no reason. It is
+Phase 6.
 
 Ask for explicit go/no-go.
 
@@ -129,8 +135,8 @@ steps individually — approval at Phase 3 covers them. Report the results as on
 2. **`.gitignore`** for the stack, plus `.env` (never committed) and a committed `.env.example`
    listing every key with placeholder values. Secrets live in `.env` only — never hardcoded,
    never committed.
-3. **`README.md`** — what it is, how to run it locally, how to deploy. Written for someone
-   returning in six months with no memory of it.
+3. **`README.md`** — what it is and **how to run it locally**. Written for someone returning in six
+   months with no memory of it. Deployment is added in Phase 6, once there is a target.
 4. **`CLAUDE.md`** — project-specific instructions. Mirror to `AGENTS.md` when other tools are in
    play; keep them identical rather than letting them drift.
 5. **`git init`**, then a first commit containing the scaffold only.
@@ -138,7 +144,7 @@ steps individually — approval at Phase 3 covers them. Report the results as on
    **Private unless the user explicitly asked for public.**
 7. **Obsidian** — create `<Project Name>/` in the vault root
    (`/mnt/c/Users/jobid/OneDrive/Documents/X posts/`) with an index note holding the one-liner,
-   the NOT list, the repo URL, the local path, and the deploy target.
+   the NOT list, the locked direction and seed, the repo URL, the local path, and the run command.
    > The vault is under OneDrive. Never run recursive scans (`find`, `grep -r`, `rg`, `ls -R`,
    > `du`) against that path from WSL — it hydrates cloud placeholders and fills the C: drive.
    > Use `powershell.exe -NoProfile -Command "Get-ChildItem ..."` for discovery. Reading and
@@ -160,16 +166,74 @@ steps individually — approval at Phase 3 covers them. Report the results as on
 
 9. **Report** the repo URL, local path, and vault path together.
 
+Then build: `@architect` plans, `@implementer` executes, `/impeccable` designs, `@code-reviewer`
+reads. Nothing ships to the user until Phase 5.
+
 ---
 
-## After the Gate
+## Phase 5 — First Run
+
+**The app runs on localhost and someone looks at it before anyone calls it done.**
+
+This phase exists because it is the one that was missing. A build can pass `@architect`,
+`@implementer`, `@code-reviewer`, eleven `impeccable audit` runs, `critique`, `shape`, and
+`document` — and still open on a screen with an invisible input and no buttons. Every one of those
+gates asks whether the output is distinctive, committed, contrast-correct, and free of AI clichés.
+**Not one of them asks whether a person could use it.**
+
+1. **Start it.** `npm run dev` or the stack's equivalent. Report the URL. Leave it running.
+2. **View it at the size it will actually be used.** Phone viewport for anything mobile-first — not
+   a desktop window that happens to be narrow.
+3. **Answer all five in writing, against the running build:**
+   - What does a first-time user tap or type **first**? Is it visible without being told?
+   - Is everything interactive *recognizable* as interactive? Affordance, not just meaning — a
+     cliché removed for taste reasons that took the only affordance with it is a defect.
+   - Does the primary path complete **end to end** with real input?
+   - Does it hold up **in the Phase 1 scenario** — the right hour, device, and state of mind? A
+     bedtime app verified at 9am is not verified.
+   - **Is the core promise implemented, or stubbed?** Name every stub out loud, in the report, not
+     in a code comment. A product whose entire idea is a stub is not a build.
+4. **Show the user** screenshots of the real running build. Never mockups, never comps.
+
+Any "no" is a **blocker**, not a note. Fix it and re-run this phase before the reveal.
+
+Then publish the **build report** as an Artifact: the flow state by state with real captures, what
+the reviews caught, what is stubbed, and what is left. Hand over the link.
+
+---
+
+## Phase 6 — Deploy Target
+
+Only now, with something running and its real dependencies known.
+
+| Target | Runtime | Choose when |
+|---|---|---|
+| **Vercel** | Node + Edge, serverless | Frontend-led, SSR/SPA, small API routes. Default for most web work |
+| **Cloudflare** | V8 isolates, edge only | Global reach, cost at scale, fastest cold start. **Not full Node** — verify every dependency runs on workerd |
+| **Railway** | Containers, persistent | Long-running processes, websockets, cron, background jobs, a database you control |
+| **Static host** | None | No server logic at all |
+
+Check the disqualifiers against what the code now actually does: a persistent connection, a job
+that outlives a request, a scheduled task, or a dependency needing native Node APIs. Any of those
+means Railway (or another container host), not Vercel or Cloudflare.
+
+Name the storage layer too — it is part of the target.
+
+AWS and GCP are not set up for this workflow. If one is required, say so rather than improvising.
+
+Add the deploy section to `README.md` once the target is chosen.
+
+---
+
+## The build loop
 
 ```
 @architect                    plan — files, signatures, edge cases, checkpoint test
 @implementer                  build the plan exactly
 /impeccable audit <surface>   deterministic rules — a11y, contrast, responsive
 /impeccable critique <surface> hierarchy, clarity, resonance
-@code-reviewer                correctness, security, duplication
+@code-reviewer                correctness, security, plan compliance, duplication
+Phase 5                       run it, use it, screenshot it   ← blocks the reveal
 @scribe                       persist decisions and corrections
 ```
 
@@ -183,6 +247,9 @@ Never ship an empty or placeholder state — `/impeccable onboard` handles first
 | Symptom | Missed phase |
 |---|---|
 | "This isn't what I asked for" | 1 — no NOT list |
-| "It looks generic / AI-generated" | 2 — skipped `init`, designed from imagination |
+| "It looks generic / AI-generated" | 2 — stopped at `init`, never rolled a direction |
+| "It's beautiful and I can't use it" | 5 — never opened, only reviewed |
+| "The whole idea is stubbed" | 5 — stubs never named out loud |
 | Design fixes arriving as the last commits | After — audit ran as cleanup instead of before reveal |
 | Built the wrong thing fast | 3 — no go/no-go |
+| Host constrains a design nobody chose yet | 6 pulled forward into 3 |

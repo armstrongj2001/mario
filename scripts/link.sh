@@ -17,7 +17,10 @@ MODE=install
 
 # Workforces agents retired by this layer (their role is covered by a base agent).
 # Name-collisions are handled by the link itself; these are the non-colliding ones.
-RETIRE=(clean-coder)
+# design-pilot / design-reviewer: all design belongs to /impeccable, which rolls a real
+# direction from a seeded catalog instead of one model's taste. Both were removed from this
+# layer; retiring them here also stops Workforces' copies from filling the gap.
+RETIRE=(clean-coder design-pilot design-reviewer)
 
 mkdir -p "$CLAUDE_DIR/agents"
 echo "base agents → $CLAUDE_DIR/agents  (source: $ROOT)"
@@ -53,12 +56,23 @@ for pair in "skills:skills" "commands:commands"; do
   done
 done
 
+# Sweep symlinks pointing at agents this layer no longer ships.
+for dest in "$CLAUDE_DIR"/agents/*.md; do
+  [[ -L "$dest" ]] || continue
+  tgt="$(readlink "$dest")"
+  [[ "$tgt" == "$ROOT/agents/"* && ! -e "$tgt" ]] || continue
+  case "$MODE" in
+    dry)     echo "  WOULD CLEAR (stale): $(basename "$dest")" ;;
+    *)       rm "$dest"; echo "  CLEARED (stale): $(basename "$dest")" ;;
+  esac
+done
+
 for n in "${RETIRE[@]}"; do
   dest="$CLAUDE_DIR/agents/$n.md"
   case "$MODE" in
     unlink)  [[ -f "$WF/agents/$n.md" && ! -e "$dest" ]] && ln -sfn "$WF/agents/$n.md" "$dest" && echo "  RESTORED: $n.md" ;;
-    dry)     [[ -L "$dest" ]] && echo "  WOULD RETIRE: $n.md (role covered by implementer + code-reviewer)" ;;
-    install) [[ -L "$dest" ]] && rm "$dest" && echo "  RETIRED: $n.md → implementer + code-reviewer" ;;
+    dry)     [[ -L "$dest" ]] && echo "  WOULD RETIRE: $n.md" ;;
+    install) [[ -L "$dest" ]] && rm "$dest" && echo "  RETIRED: $n.md" ;;
   esac
 done
 exit 0
