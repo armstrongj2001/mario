@@ -33,6 +33,15 @@ rule instead of an enforced one:
 The weakness is real and worth naming: one model reviewing its own work is not fresh eyes. Where
 the harness lets you switch models between steps 2 and 3, do it.
 
+## The build loop, in one paragraph
+
+Work runs one slice at a time. A slice is one behavior a human could verify by running the thing;
+if you cannot state its verification step in a sentence, it is too big. Plan the slice, build only
+that slice, then review the **diff** against the plan and run the verification independently.
+Every claim of success names the command that ran and what it printed. Anything broken outside the
+current slice goes to `docs/PUNCHLIST.md` unfixed. Decisions go to `docs/DECISIONS.md`, session
+state to `docs/HANDOFF.md` — context does not persist, written records do.
+
 ## The two rules that are the whole point
 
 Every other part of this method exists somewhere else. These two do not:

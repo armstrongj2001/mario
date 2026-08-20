@@ -192,24 +192,30 @@ steps individually — approval at Phase 3 covers them. Report the results as on
    listing every key with placeholder values. Secrets live in `.env` only — never hardcoded,
    never committed.
 3. **`docs/ROADMAP.md`** — the roadmap agreed at Checkpoint 1b, verbatim, with the NOT list and the
-   usage scenario at the top. This is what `/work plan` reads later; a roadmap that only exists in
-   the transcript is a roadmap the next session cannot use.
-4. **`README.md`** — what it is and **how to run it locally**. Written for someone returning in six
+   usage scenario at the top, then a **Slices** section: each slice's behavior, its one-line
+   **Verify by**, and its status. This is what `/work plan` reads later; a roadmap that only exists
+   in the transcript is a roadmap the next session cannot use.
+4. **The record files**, so the project outlives any single session:
+   - `docs/DECISIONS.md` — append-only. `Chose / Over / Because / Revisit if`. When a decision is
+     reversed, add an entry superseding the old one; never delete history.
+   - `docs/PUNCHLIST.md` — a table of things found but not fixed. Starts empty.
+   - `docs/HANDOFF.md` — state, done, in flight, blocked, start-here-next-time. Written at logoff.
+5. **`README.md`** — what it is and **how to run it locally**. Written for someone returning in six
    months with no memory of it. Deployment is added in Phase 6, once there is a target.
-5. **`CLAUDE.md`** — project-specific instructions: what this project is, its NOT list, its stack
+6. **`CLAUDE.md`** — project-specific instructions: what this project is, its NOT list, its stack
    and run command. Project facts only — the method itself is not copied here, it is reached
    through the bindings in step 11.
-6. **`git init`**, then a first commit containing the scaffold only.
-7. **Create the remote** — `gh repo create <name> --private --source=. --remote=origin --push`.
+7. **`git init`**, then a first commit containing the scaffold only.
+8. **Create the remote** — `gh repo create <name> --private --source=. --remote=origin --push`.
    **Private unless the user explicitly asked for public.**
-8. **Obsidian** — create `<Project Name>/` in the vault root
+9. **Obsidian** — create `<Project Name>/` in the vault root
    (`/mnt/c/Users/jobid/OneDrive/Documents/X posts/`) with an index note holding the one-liner,
    the NOT list, the locked direction and seed, the repo URL, the local path, and the run command.
    > The vault is under OneDrive. Never run recursive scans (`find`, `grep -r`, `rg`, `ls -R`,
    > `du`) against that path from WSL — it hydrates cloud placeholders and fills the C: drive.
    > Use `powershell.exe -NoProfile -Command "Get-ChildItem ..."` for discovery. Reading and
    > writing individual known files is fine.
-9. **Offer to open it.** Ask which editor unless the user has a configured preference — check
+10. **Offer to open it.** Ask which editor unless the user has a configured preference — check
    their global instructions first and just use it if one is set. Do not open anything without
    asking or a standing preference; a window stealing focus mid-session is worse than a question.
 
@@ -224,7 +230,7 @@ steps individually — approval at Phase 3 covers them. Report the results as on
    wrong side. Some editors need an explicit remote flag for this. If the user's global
    instructions record the exact command, use it verbatim.
 
-10. **Install Workforces.** Every project gets it — this is not a question to ask:
+11. **Install Workforces.** Every project gets it — this is not a question to ask:
 
     ```bash
     bash ~/antigravity/workforces/skills/workforce-management/scripts/setup.sh ./ \
@@ -238,7 +244,7 @@ steps individually — approval at Phase 3 covers them. Report the results as on
     > and `/brand-context`, all superseded by Impeccable. Delete them from the project's `.agents/`
     > so nothing competes with `DESIGN.md`. Point `/work` at `docs/ROADMAP.md` as its source.
 
-11. **Portable bindings.** So the method survives whatever tool opens this repo next:
+12. **Portable bindings.** So the method survives whatever tool opens this repo next:
     - A gitignored `.mario` symlink at the project root pointing at the mario checkout. A symlink,
       never a copy — a copy stops hearing about edits the day it is made.
     - `AGENTS.md` (three lines, committed): what the project is, and *"This project follows the
@@ -248,7 +254,7 @@ steps individually — approval at Phase 3 covers them. Report the results as on
       `GEMINI.md`, or `.agents/` — it does not look for `AGENTS.md`, so without this the project
       opens in Antigravity with no bindings loaded.
     - Add `.mario` to `.gitignore`.
-12. **Report** the repo URL, local path, and vault path together.
+13. **Report** the repo URL, local path, and vault path together.
 
 Then build: `@architect` plans, `@implementer` executes, `/impeccable` designs, `@code-reviewer`
 reads. Nothing ships to the user until Phase 5.
@@ -315,18 +321,61 @@ Add the deploy section to `README.md` once the target is chosen.
 
 ## The build loop
 
+Between Phase 4 and Phase 5, work runs **one slice at a time**.
+
+A **slice** is one behavior a human could verify by running the thing. If you cannot state the
+verification step in a sentence, the slice is too big — split it. A slice with no verification step
+is not a slice.
+
 ```
-@architect                    plan — files, signatures, edge cases, checkpoint test
-@implementer                  build the plan exactly
-/impeccable audit <surface>   deterministic rules — a11y, contrast, responsive
-/impeccable critique <surface> hierarchy, clarity, resonance
-@code-reviewer                correctness, security, plan compliance, duplication
-Phase 5                       run it, use it, screenshot it   ← blocks the reveal
-@scribe                       persist decisions and corrections
+@architect          the slice: files, signatures, edge cases, VERIFY BY
+@implementer        build that slice only
+/impeccable audit   a11y, contrast, responsive — before the user sees it, not after
+/impeccable critique hierarchy, clarity, resonance
+@code-reviewer      reads the diff cold, runs the verification itself
+@scribe             DECISIONS.md if a real decision was made
+   ↑ repeat per slice
+Phase 5             run it, use it, screenshot it   ← blocks the reveal
 ```
 
-Run `/impeccable audit` **before** showing the user a surface, not after they complain.
+### The five rules
+
+1. **Nobody builds without a plan.** A slice with no written definition of done cannot be verified,
+   reviewed, or handed off. If you are about to type "just make it work," you skipped the architect
+   and will pay for it in rework.
+2. **One slice at a time.** Batching three slices before a review means a bug in the first
+   contaminates the other two.
+3. **The one who builds does not judge.** The implementer shares every assumption that produced the
+   bug. The reviewer reads the diff cold and runs the verification itself — on a different model
+   where the harness allows it. This is the highest-leverage rule here.
+4. **Reading is delegated; writing is not.** Heavy reconnaissance — tracing call sites, evaluating a
+   library, touring an unfamiliar codebase — goes to a disposable-context agent. Never burn the
+   orchestrating thread's window on a directory tour.
+5. **The record outlives the session.** Context does not persist; written state does. Decisions go
+   in `docs/DECISIONS.md`, deferred work in `docs/PUNCHLIST.md`, and the state dump in
+   `docs/HANDOFF.md` before logging off. A session that ends without a handoff has to be
+   reconstructed, and reconstruction is where wrong assumptions creep back in.
+
+### Found something broken outside the current slice?
+
+**Log it to `docs/PUNCHLIST.md`. Do not fix it.** Fixing it means the diff under review is no
+longer the slice that was planned, and the reviewer now has two changes tangled together. The
+punchlist is what makes "not now" a decision instead of an oversight.
+
+### What "it works" has to mean
+
+Every claim of success **names the command that was run and what it printed.** "It should work,"
+"the build passes," and "verified" with nothing attached are not results. This is the cheapest
+possible defense against an agent reporting green on something it never executed.
+
 Never ship an empty or placeholder state — `/impeccable onboard` handles first-run and empty states.
+
+### Cost, honestly
+
+Every delegated role carries its own context, so a full loop burns substantially more tokens than
+one thread doing everything. The trade is real, not free. It earns its cost on work that is
+long-running, that has to be correct, or that someone returns to later. It is overkill for a
+twenty-line script — run the loop for projects, not errands.
 
 ---
 
@@ -341,3 +390,7 @@ Never ship an empty or placeholder state — `/impeccable onboard` handles first
 | Design fixes arriving as the last commits | After — audit ran as cleanup instead of before reveal |
 | Built the wrong thing fast | 3 — no go/no-go |
 | Host constrains a design nobody chose yet | 6 pulled forward into 3 |
+| **Plan drift** — the implementer solved a slightly different, easier problem | Build loop — the reviewer checked the code instead of checking it against the plan |
+| **Green-washing** — "it works" with nothing executed | Build loop — no command and no output was named |
+| **Review theater** — every review returns three medium findings | Build loop — a reviewer that never returns "clean" is performing, not reviewing |
+| **Context bleed** — a new topic started in a session full of an old one | Build loop — start fresh; `HANDOFF.md` carries the thread, not the transcript |

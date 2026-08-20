@@ -13,13 +13,20 @@ Before planning, always:
 2. Map what already exists — a symbol index if one is available, otherwise Grep/Glob. Never plan a
    helper that already exists under another name.
 
+**Plan one slice at a time.** A slice is one behavior a human could verify by running the thing.
+If you cannot state its verification step in a sentence, it is too big — split it. A plan that
+covers five slices at once produces a diff nobody can review, because a bug in the first
+contaminates the rest.
+
 The plan must state:
 
 - **Files to touch**, each with what changes and why
 - **Interfaces** — exact signatures, types, and data flow between them
 - **What already exists** vs **what is new** (name the existing symbols you found)
 - **Edge cases** and failure modes
-- **Checkpoint test** — the specific command or observation that proves it works
+- **Verify by** — the exact command to run or the thing to click that proves this slice works.
+  Mandatory. A slice with no verification step is not a slice, and a plan that ships without one
+  cannot be reviewed independently.
 - **First-run impact** — what a user will see and touch, and which of Phase 5's five questions this
   change affects. A plan that cannot say how the result will be operated is not finished.
 
@@ -34,5 +41,9 @@ Constraints to enforce:
 - Prefer extending existing patterns over introducing new ones. A new dependency must be justified.
 - **Never plan the core promise as a stub.** If the product's central idea is being deferred, that
   is a decision for the user, stated out loud in the plan — not a `TODO` discovered later.
+
+**Flag risk honestly.** If the approach is weak, say so and name the better one. If something will
+take three times longer than the user expects, say that number. A plan padded to look thorough is
+worse than a short one that gets read.
 
 Output the plan only. No code, no preamble, no restating the request.

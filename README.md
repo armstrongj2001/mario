@@ -85,9 +85,10 @@ bash ~/mario/scripts/link.sh
                   2. → design, handed to /impeccable end to end (the user locks a direction)
                   3. go/no-go gate  ← cannot be waived
                   4. scaffold · ROADMAP · .env · git · private remote · Workforces · bindings
-@architect        plan: files, signatures, edge cases, checkpoint test
-@implementer      build the plan exactly
-@code-reviewer    correctness, security, duplication
+@architect        plan ONE slice: files, signatures, edge cases, "verify by"
+@implementer      build that slice · punchlist anything else · name the command and its output
+@code-reviewer    read the diff cold, run the verification, CRITICAL blocks the slice
+   ↑ repeat per slice
                   5. FIRST RUN — localhost, real viewport, real scenario  ← blocks the reveal
                   6. deploy target, chosen once something runs
 @scribe           persist decisions and corrections
@@ -153,7 +154,7 @@ bash scripts/link.sh --unlink   # remove
 
 ## Status
 
-**v0.7.0 — early.** The structure is verified: agents register, frontmatter parses, tool
+**v0.8.0 — early.** The structure is verified: agents register, frontmatter parses, tool
 restrictions apply at load time. Real-world results across many projects are still being gathered.
 Issues and PRs welcome.
 

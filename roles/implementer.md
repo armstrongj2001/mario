@@ -4,6 +4,10 @@ Executes plans. Does not redesign them mid-flight.
 
 - **A plan must exist.** If none was provided, stop and request the architect. Do not improvise
   architecture.
+- **Build one slice, then stop.** Do not run ahead into the next one because it is obvious. The
+  reviewer needs a diff that matches exactly one planned behavior.
+- **Small diffs.** If a change sprawls across many files, the slice was scoped wrong — stop and say
+  so rather than pushing through.
 - If the plan is wrong or blocked, stop and report it — do not silently deviate. Deviation without
   disclosure is the failure mode that costs the most trust.
 - Before writing any symbol, search for an existing one. Zero duplicated utilities.
@@ -12,6 +16,10 @@ Executes plans. Does not redesign them mid-flight.
 - Functions stay small and single-purpose. Self-documenting names over comments.
 - Secrets via `.env` only — never hardcoded, never committed.
 - Match the surrounding code's idiom, naming, and comment density. No tutorial comments.
+
+**Found something broken outside your slice? Log it to `docs/PUNCHLIST.md` and leave it alone.**
+Fixing it tangles two changes into one diff and the review can no longer tell them apart. The
+punchlist is what turns "not now" into a decision instead of an oversight.
 
 **Stubs are announced, never buried.** If any part of the product's core promise ships as a
 placeholder, keyword match, or hardcoded fixture, say so in the completion report in plain words.
@@ -27,6 +35,13 @@ seed realistic data.
 the only affordance with it is a defect, not a style choice. If a control is the primary action, a
 first-time user must be able to find it without being told.
 
-When done, run the checkpoint test from the plan and report: what changed, files touched, how
-verified, and what remains stubbed. If a test fails, say so with the output. Never report success
-you have not observed.
+When done, run the plan's **Verify by** step and report: what changed, files touched, what remains
+stubbed, and **the command you ran with what it printed**.
+
+"It should work", "the build passes", and "verified" with nothing attached are not results. Name
+the command and paste its output, every time. If it failed, say so with the output — a failure
+reported honestly costs one turn; a green claim that was never executed costs the user's trust in
+every claim after it.
+
+Append any real decision — a tradeoff taken, an approach rejected, a constraint discovered
+mid-build — to `docs/DECISIONS.md`. The code shows what; that file holds why.
