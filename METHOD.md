@@ -21,6 +21,11 @@ These hold for every phase, without being asked:
 - **Create nothing before Phase 3 approval.** No directory, no `package.json`, no `git init`, no
   "quick scaffold to hold things." If you are about to write, stop and say so instead. This is not
   waivable by `--auto`, by urgency, or by the user seeming impatient.
+
+  > **This forbids building the project, not taking notes.** Persisting approved decisions to a
+  > scratch location *outside* the project root is required, not a loophole — see Checkpoint 1b.
+  > The rule exists so nothing gets built before the target is settled; a session that loses the
+  > settled target to a crash defeats the same purpose from the other direction.
 - **Announce each phase as you enter it**, and announce every agent handoff (`@architect`,
   `@implementer`, …) as it happens, so the chain is visible while it runs.
 - **This is a human-in-the-loop workflow. Unattended mode is not available.** There is no `--auto`
@@ -105,8 +110,22 @@ what state of mind. Phase 5 tests against that scenario, so a vague answer here 
 verified in conditions nobody will ever be in.
 
 **Checkpoint 1b:** put the reconciled roadmap, the NOT list, and the usage scenario back to the
-user as one block and get confirmation. This is the last cheap moment to be wrong. The agreed
-roadmap is written to `docs/ROADMAP.md` at Phase 4, where `/work plan` can pick it up.
+user as one block and get confirmation. This is the last cheap moment to be wrong.
+
+**Then persist it before Phase 2 begins.** Everything approved here — the reconciled roadmap, the
+NOT list verbatim, the usage scenario, and the conflicts you surfaced — is written to a durable
+location **outside the project root**: the harness scratchpad if it has one, otherwise
+`~/.mario/pending/<project-slug>.md`.
+
+This is not a violation of the Phase 3 gate; it is the gate working. Nothing is being built and no
+project root exists. What is being protected is the reconciliation itself, which is the most
+expensive thing produced so far and, until Phase 4, exists only in a transcript. A crashed or
+compacted session that has to re-derive it will re-derive it differently, and the second version
+will be worse — the user already answered those questions once and will answer more thinly the
+second time.
+
+Phase 4 moves this file into `docs/ROADMAP.md` and deletes the pending copy. If a session resumes
+and a pending file exists for this project, read it first rather than re-interviewing.
 
 ---
 
@@ -384,12 +403,27 @@ possible defense against an agent reporting green on something it never executed
 
 Never ship an empty or placeholder state — `/impeccable onboard` handles first-run and empty states.
 
-### Cost, honestly
+### Cost, honestly — and which loop a slice gets
 
 Every delegated role carries its own context, so a full loop burns substantially more tokens than
-one thread doing everything. The trade is real, not free. It earns its cost on work that is
-long-running, that has to be correct, or that someone returns to later. It is overkill for a
-twenty-line script — run the loop for projects, not errands.
+one thread doing everything. The trade is real, not free. It earns its cost where being wrong is
+expensive or permanent. It does not earn it on a seed script.
+
+So slices run in one of two lanes, and **you name the lane out loud before starting the slice.** A
+silent downgrade is indistinguishable from skipping the loop.
+
+| | **Full loop** | **Short loop** |
+|---|---|---|
+| For | Wrong is expensive or permanent: data models and migrations, auth, money, the logic that produces a verdict or decision, **anything a user touches** | Wrong is cheap and obvious: seed scripts, fixtures, config, scaffolding, scrapers and fingerprinting, one-off transforms |
+| Plan | Full architect plan | A paragraph in-thread, still with a **Verify by** |
+| Design | `/impeccable audit` + `critique` | Skipped when no surface is involved |
+| Review | `@code-reviewer` on the diff | `@code-reviewer` on the diff |
+
+**Never skipped in either lane:** the slice's `Verify by`, running it, and naming the command with
+its output. Those are what make a slice a slice.
+
+**When unsure, the slice is load-bearing.** And any slice a user will see or touch is full loop
+regardless of how mechanical it looks — that is the whole lesson of the run that produced Phase 5.
 
 ---
 
