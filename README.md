@@ -81,10 +81,10 @@ bash ~/mario/scripts/link.sh
 ## The flow
 
 ```
-/start-project    1. what is it · who · what it does NOT do · success · the real usage scenario
+/start-project    1. roadmap — bring one or build one · NOT list · the real usage scenario
                   2. → design, handed to /impeccable end to end (the user locks a direction)
                   3. go/no-go gate  ← cannot be waived
-                  4. scaffold · .env · README · git · private remote · notes
+                  4. scaffold · ROADMAP · .env · git · private remote · Workforces · bindings
 @architect        plan: files, signatures, edge cases, checkpoint test
 @implementer      build the plan exactly
 @code-reviewer    correctness, security, duplication
@@ -95,6 +95,10 @@ bash ~/mario/scripts/link.sh
 
 Nothing is written to disk until step 3 is approved. Everything in step 4 then runs without
 further prompting — approval covers the whole setup.
+
+**Four checkpoints stop and wait for a human**: the roadmap and NOT list, the visual direction,
+go/no-go, and the first-run verdict. There is no unattended mode for `/start-project`, deliberately
+— a run that completes overnight with nobody awake is the failure this method exists to prevent.
 
 Two steps are load-bearing.
 
@@ -149,7 +153,7 @@ bash scripts/link.sh --unlink   # remove
 
 ## Status
 
-**v0.6.0 — early.** The structure is verified: agents register, frontmatter parses, tool
+**v0.7.0 — early.** The structure is verified: agents register, frontmatter parses, tool
 restrictions apply at load time. Real-world results across many projects are still being gathered.
 Issues and PRs welcome.
 

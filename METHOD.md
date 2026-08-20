@@ -23,9 +23,14 @@ These hold for every phase, without being asked:
   waivable by `--auto`, by urgency, or by the user seeming impatient.
 - **Announce each phase as you enter it**, and announce every agent handoff (`@architect`,
   `@implementer`, …) as it happens, so the chain is visible while it runs.
-- **Answer from the prompt before asking.** A good brief already contains most of Phase 1 — extract
-  what is there, reflect it back for confirmation, and ask only about what is genuinely missing.
-  Re-asking what the user already told you is the fastest way to make this feel like a form.
+- **This is a human-in-the-loop workflow. Unattended mode is not available.** There is no `--auto`
+  for `start-project`. At every checkpoint below, if no human answers, **stop and wait** — do not
+  infer the answer, do not proceed on the most likely reading, do not "keep momentum." A run that
+  finishes overnight with nobody awake is the failure this method exists to prevent, not a feature.
+- **Ask in batched rounds, never one question at a time and never a form.** At most four questions
+  per round, at most three rounds per checkpoint. Use the harness's structured question UI when it
+  has one. Extract what the user already told you first and reflect it back for confirmation —
+  re-asking what they just said is what makes a gate feel like paperwork.
 - **Never skip Phase 2, and never run only part of it.** `/impeccable init` is the first step of
   the design arc, not the whole of it.
 - **Never call it done on a passing review.** Craft reviews measure whether a surface is good.
@@ -33,21 +38,62 @@ These hold for every phase, without being asked:
 - **Do not reproduce copyrighted material.** Reference the structure and pacing of existing
   products; write original content.
 
+### The four checkpoints
+
+Each one stops and waits for a human. They are the spine of the method; everything between them is
+work you do on your own.
+
+| # | Where | The user decides |
+|---|---|---|
+| 1 | Phase 1 | Where the roadmap comes from, and the NOT list |
+| 2 | Phase 2 | Which visual direction is locked |
+| 3 | Phase 3 | Go / no-go |
+| 4 | Phase 5 | Whether the running build is usable |
+
 ---
 
-## Phase 1 — Intent
+## Phase 1 — Roadmap & Intent
 
-Write nothing yet. A pasted brief or roadmap is **input**, not approval — briefs describe features
-and feel, rarely who it is for or what it must not become.
+Write nothing yet.
 
-Extract from what the user already gave you, then confirm and fill gaps. The four things you need:
+### Checkpoint 1a — where does the roadmap come from?
+
+**Ask this first, before anything else.** Do not assume, and do not start interviewing until it is
+answered:
+
+> *"Do you have a roadmap already — written here, in Claude Desktop, or anywhere else — or should
+> we build one together now?"*
+
+| Answer | What you do |
+|---|---|
+| **They have one** | They paste it or name the file. Go to *reconciliation* below. |
+| **Build it here** | Run the interview, then **write the roadmap yourself** and put it back to them for correction before it counts. |
+| **Just an idea** | Same as *build it here*, starting colder. Expect more rounds. |
+
+A roadmap written elsewhere is often the better artifact — a longer conversation in a bigger
+context window usually produces a sharper one than a gate interview will. Take it gladly. It is
+still **input, not approval**, and it does not replace a single question below.
+
+### Reconciliation — what to do with a roadmap you were handed
+
+Do not accept it and move on; that is what a one-shot looks like. Read it and split it into three
+lists, then show the user all three:
+
+1. **What it answers** — reflected back in one line each, for confirmation.
+2. **What it leaves open** — the gaps. These become your question rounds.
+3. **What contradicts the NOT list, or contradicts itself.** Say so plainly. A roadmap that names a
+   feature the user later refuses is a conflict to settle now, not a surprise to hit at Phase 4.
+
+### The four things you need
+
+Whichever path you came in on:
 
 1. **What is it?** One sentence a stranger would understand.
 2. **Who opens it, and what do they do in the first 30 seconds?**
 3. **What does it explicitly NOT do?** ← the scope boundary. Force a real answer.
 4. **Success looks like…?** A screenshot, signups, a demo?
 
-Ask only for what the brief did not already answer. **Q3 is almost never in a brief** — people
+Ask only for what the roadmap did not already answer. **Q3 is almost never in a roadmap** — people
 describe what they want, not what they are refusing. Expect to ask it, and expect the first answer
 to be vague. Push once with a concrete wrong-direction guess: *"So it is not just a feed of your
 GitHub repos?"*
@@ -57,6 +103,10 @@ Record the **NOT list** verbatim. Every later scope question is settled against 
 Capture the **real usage scenario** with it — where the user is, on what device, at what hour, in
 what state of mind. Phase 5 tests against that scenario, so a vague answer here produces a build
 verified in conditions nobody will ever be in.
+
+**Checkpoint 1b:** put the reconciled roadmap, the NOT list, and the usage scenario back to the
+user as one block and get confirmation. This is the last cheap moment to be wrong. The agreed
+roadmap is written to `docs/ROADMAP.md` at Phase 4, where `/work plan` can pick it up.
 
 ---
 
@@ -73,8 +123,9 @@ not stop after `init`, and do not cherry-pick commands.
    localhost** — one card per direction with thesis, palette, materials, first viewport, honest
    risk, and a generated comp. Open the URL for the user.
 
-   **The user locks a card. You do not pick for them.** They may re-roll, or steer *safer* /
-   *bolder*. Record the seed; it reproduces the entire round.
+   **Checkpoint 2 — the user locks a card. You do not pick for them.** They may re-roll, or steer
+   *safer* / *bolder*. Record the seed; it reproduces the entire round. If nobody answers, the
+   phase stops here; it does not proceed on your favorite.
 3. **Whatever `init` recommends next**, and the rest of the arc through the build — `audit`,
    `critique`, `polish`, `onboard` for first-run and empty states.
 
@@ -110,7 +161,7 @@ The deploy target is **not** decided here. Nothing has been built, so nothing co
 yet, and picking a host before there is a running app narrows the design for no reason. It is
 Phase 6.
 
-Ask for explicit go/no-go.
+**Checkpoint 3 — ask for explicit go/no-go.**
 
 **Code begins only after the user says go.** This gate cannot be waived — not by `--auto`, not by
 "just start", not by a pasted roadmap.
@@ -140,21 +191,25 @@ steps individually — approval at Phase 3 covers them. Report the results as on
 2. **`.gitignore`** for the stack, plus `.env` (never committed) and a committed `.env.example`
    listing every key with placeholder values. Secrets live in `.env` only — never hardcoded,
    never committed.
-3. **`README.md`** — what it is and **how to run it locally**. Written for someone returning in six
+3. **`docs/ROADMAP.md`** — the roadmap agreed at Checkpoint 1b, verbatim, with the NOT list and the
+   usage scenario at the top. This is what `/work plan` reads later; a roadmap that only exists in
+   the transcript is a roadmap the next session cannot use.
+4. **`README.md`** — what it is and **how to run it locally**. Written for someone returning in six
    months with no memory of it. Deployment is added in Phase 6, once there is a target.
-4. **`CLAUDE.md`** — project-specific instructions. Mirror to `AGENTS.md` when other tools are in
-   play; keep them identical rather than letting them drift.
-5. **`git init`**, then a first commit containing the scaffold only.
-6. **Create the remote** — `gh repo create <name> --private --source=. --remote=origin --push`.
+5. **`CLAUDE.md`** — project-specific instructions: what this project is, its NOT list, its stack
+   and run command. Project facts only — the method itself is not copied here, it is reached
+   through the bindings in step 11.
+6. **`git init`**, then a first commit containing the scaffold only.
+7. **Create the remote** — `gh repo create <name> --private --source=. --remote=origin --push`.
    **Private unless the user explicitly asked for public.**
-7. **Obsidian** — create `<Project Name>/` in the vault root
+8. **Obsidian** — create `<Project Name>/` in the vault root
    (`/mnt/c/Users/jobid/OneDrive/Documents/X posts/`) with an index note holding the one-liner,
    the NOT list, the locked direction and seed, the repo URL, the local path, and the run command.
    > The vault is under OneDrive. Never run recursive scans (`find`, `grep -r`, `rg`, `ls -R`,
    > `du`) against that path from WSL — it hydrates cloud placeholders and fills the C: drive.
    > Use `powershell.exe -NoProfile -Command "Get-ChildItem ..."` for discovery. Reading and
    > writing individual known files is fine.
-8. **Offer to open it.** Ask which editor unless the user has a configured preference — check
+9. **Offer to open it.** Ask which editor unless the user has a configured preference — check
    their global instructions first and just use it if one is set. Do not open anything without
    asking or a standing preference; a window stealing focus mid-session is worse than a question.
 
@@ -169,14 +224,31 @@ steps individually — approval at Phase 3 covers them. Report the results as on
    wrong side. Some editors need an explicit remote flag for this. If the user's global
    instructions record the exact command, use it verbatim.
 
-9. **Portable bindings.** So the method survives whatever tool opens this repo next:
-   - A gitignored `.mario` symlink at the project root pointing at the mario checkout. A symlink,
-     never a copy — a copy stops hearing about edits the day it is made.
-   - `AGENTS.md` (three lines, committed): what the project is, and *"This project follows the
-     mario method. Read `.mario/METHOD.md` and the role definitions in `.mario/roles/`."*
-     Codex, Cursor, Gemini, and Grok all read a root instruction file; this is the one they get.
-   - Add `.mario` to `.gitignore`.
-10. **Report** the repo URL, local path, and vault path together.
+10. **Install Workforces.** Every project gets it — this is not a question to ask:
+
+    ```bash
+    bash ~/antigravity/workforces/skills/workforce-management/scripts/setup.sh ./ \
+      --type project --editor antigravity --non-interactive
+    ```
+
+    It writes `.agents/` (toolkit) and `workforces/` (workstate, goals, team-sync), which is what
+    makes `/work`, `/work plan`, and `/work sync` function. Without it those commands find nothing.
+
+    > **Then neutralize its design layer.** The install ships `@design-pilot`, `@design-reviewer`,
+    > and `/brand-context`, all superseded by Impeccable. Delete them from the project's `.agents/`
+    > so nothing competes with `DESIGN.md`. Point `/work` at `docs/ROADMAP.md` as its source.
+
+11. **Portable bindings.** So the method survives whatever tool opens this repo next:
+    - A gitignored `.mario` symlink at the project root pointing at the mario checkout. A symlink,
+      never a copy — a copy stops hearing about edits the day it is made.
+    - `AGENTS.md` (three lines, committed): what the project is, and *"This project follows the
+      mario method. Read `.mario/METHOD.md` and the role definitions in `.mario/roles/`."*
+      Codex, Cursor, and Grok all read a root instruction file; this is the one they get.
+    - **`GEMINI.md`**, same three lines. Antigravity detects its workspace by `.gemini/`,
+      `GEMINI.md`, or `.agents/` — it does not look for `AGENTS.md`, so without this the project
+      opens in Antigravity with no bindings loaded.
+    - Add `.mario` to `.gitignore`.
+12. **Report** the repo URL, local path, and vault path together.
 
 Then build: `@architect` plans, `@implementer` executes, `/impeccable` designs, `@code-reviewer`
 reads. Nothing ships to the user until Phase 5.
@@ -206,6 +278,10 @@ gates asks whether the output is distinctive, committed, contrast-correct, and f
    - **Is the core promise implemented, or stubbed?** Name every stub out loud, in the report, not
      in a code comment. A product whose entire idea is a stub is not a build.
 4. **Show the user** screenshots of the real running build. Never mockups, never comps.
+
+**Checkpoint 4 — the verdict is the user's, not yours.** Put the five answers and the screenshots
+in front of them and ask directly whether this is usable. Your own "yes" does not close this phase;
+four agent reviews and eleven audits already said yes to a screen with no buttons.
 
 Any "no" is a **blocker**, not a note. Fix it and re-run this phase before the reveal.
 
