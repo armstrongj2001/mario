@@ -129,9 +129,23 @@ not stop after `init`, and do not cherry-pick commands.
 3. **Whatever `init` recommends next**, and the rest of the arc through the build — `audit`,
    `critique`, `polish`, `onboard` for first-run and empty states.
 
-Feed Phase 1's answers in, especially the NOT list — it becomes Impeccable's anti-references. If
-the user supplies reference sites they admire, pass them through; `init` turns references into
-tokens far better than prose does.
+Feed Phase 1's answers in, especially the NOT list — it becomes Impeccable's anti-references.
+
+### Reference screenshots and sites the user brings
+
+**They do not go to `init`.** Impeccable's `init` deliberately refuses aesthetic input — its own
+reference says not to ask about visual direction, feel, references, colour, or type there, and to
+record a volunteered visual constraint without expanding it. References belong to the direction
+round. Ask which kind you were handed, because they route differently:
+
+| The user means | Route it |
+|---|---|
+| *"This **is** the direction — build this."* | A pinned direction beats the roll, always. Record it as a brand commitment in `PRODUCT.md`, skip the deal, and execute it at full fidelity. **Say out loud that this replaces the decision page**, so the trade is chosen and not discovered. |
+| *"I like this, consider it."* | Hold it for the direction round as one input among the dealt candidates. It competes; it does not win by default. The user still gets the page and still locks a card. |
+
+Pass image files by **path**, not by description — a comp anchored on a real screenshot holds the
+reference; a prose paraphrase of a design system drifts. Reference structure, pacing, and system
+grammar; never reproduce a competitor's content, copy, or identity.
 
 Skipping the roll is how every project in a category ships the same design. Do not substitute your
 own taste, and do not skip because the project is "internal" or "just a tool".
