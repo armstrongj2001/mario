@@ -18,5 +18,5 @@ roadmap is **input**, never a substitute for the questions and never approval to
 go/no-go (3), and whether the running build is usable (4). There is no unattended mode. If nobody
 answers, the run stops rather than guessing.
 
-Hands off to `@architect` on approval, and to `/work` for ongoing execution — Phase 4 installs
+Hands off to `@architect` on approval, and to `/wf-work` for ongoing execution — Phase 4 installs
 Workforces in every project, so `workstate.md` and `docs/ROADMAP.md` exist for it to read.

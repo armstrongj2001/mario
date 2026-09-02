@@ -70,8 +70,10 @@ bash ~/mario/scripts/link.sh
 | `@architect` | sonnet | Read, Grep, Glob | Plans. **Cannot write files.** |
 | `@implementer` | opus | + Write, Edit, Bash | Executes plans exactly. Won't redesign mid-flight. |
 | `@code-reviewer` | sonnet | Read, Grep, Glob, Bash | Correctness, security, plan compliance, duplication |
-| `@project-manager` | sonnet | + Bash, Write | Backlog, prioritization, GitHub issues |
-| `@scribe` | haiku | Read, Grep, Write | Persists decisions and corrections |
+| `@mario-scribe` | haiku | Read, Grep, Write | Persists decisions and corrections |
+
+Backlog and prioritization belong to Workforces' `@project-manager`, which is wired to GitHub
+issues and the task trackers. `roles/project-manager.md` is the fallback for projects without it.
 
 | Command | Job |
 |---|---|
@@ -91,7 +93,7 @@ bash ~/mario/scripts/link.sh
    ↑ repeat per slice
                   5. FIRST RUN — localhost, real viewport, real scenario  ← blocks the reveal
                   6. deploy target, chosen once something runs
-@scribe           persist decisions and corrections
+@mario-scribe     persist decisions and corrections
 ```
 
 Nothing is written to disk until step 3 is approved. Everything in step 4 then runs without

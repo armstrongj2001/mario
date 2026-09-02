@@ -169,7 +169,7 @@ grammar; never reproduce a competitor's content, copy, or identity.
 Skipping the roll is how every project in a category ships the same design. Do not substitute your
 own taste, and do not skip because the project is "internal" or "just a tool".
 
-Do not run workforces' `/brand-context` or `@design-pilot`; both are superseded and would produce a
+Do not run workforces' `/wf-brand-context` or `@designer`; both are superseded and would produce a
 competing brand file.
 
 > **Without Impeccable installed** (Codex, Grok, or a bare harness): the phase still runs, and its
@@ -226,7 +226,7 @@ steps individually — approval at Phase 3 covers them. Report the results as on
    never committed.
 3. **`docs/ROADMAP.md`** — the roadmap agreed at Checkpoint 1b, verbatim, with the NOT list and the
    usage scenario at the top, then a **Slices** section: each slice's behavior, its one-line
-   **Verify by**, and its status. This is what `/work plan` reads later; a roadmap that only exists
+   **Verify by**, and its status. This is what `/wf-plan` reads later; a roadmap that only exists
    in the transcript is a roadmap the next session cannot use.
 4. **The record files**, so the project outlives any single session:
    - `docs/DECISIONS.md` — append-only. `Chose / Over / Because / Revisit if`. When a decision is
@@ -271,11 +271,17 @@ steps individually — approval at Phase 3 covers them. Report the results as on
     ```
 
     It writes `.agents/` (toolkit) and `workforces/` (workstate, goals, team-sync), which is what
-    makes `/work`, `/work plan`, and `/work sync` function. Without it those commands find nothing.
+    makes `/wf-work`, `/wf-plan`, and `/wf-sync` function. Without it those commands find nothing.
 
-    > **Then neutralize its design layer.** The install ships `@design-pilot`, `@design-reviewer`,
-    > and `/brand-context`, all superseded by Impeccable. Delete them from the project's `.agents/`
-    > so nothing competes with `DESIGN.md`. Point `/work` at `docs/ROADMAP.md` as its source.
+    > **Then neutralize its design layer.** The install ships `@designer`, `/wf-brand-context`, and
+    > `/wf-site-setup`, all superseded by whatever owns Phase 2 in this project. Delete them from
+    > the project's `.agents/` so nothing competes with `DESIGN.md`. Point `/wf-work` at
+    > `docs/ROADMAP.md` as its source.
+    >
+    > Workforces' `@project-manager` and `@scribe` are kept. Mario ships no `@project-manager`
+    > binding — Workforces' is wired to GitHub issues and the trackers — and mario's scribe is
+    > named `@mario-scribe` so both run instead of one silently shadowing the other. Mario's
+    > backlog non-negotiables go into `workforces/workrules.md`, which updates never overwrite.
 
 12. **Portable bindings.** So the method survives whatever tool opens this repo next:
     - A gitignored `.mario` symlink at the project root pointing at the mario checkout. A symlink,
@@ -366,7 +372,7 @@ is not a slice.
 /impeccable audit   a11y, contrast, responsive — before the user sees it, not after
 /impeccable critique hierarchy, clarity, resonance
 @code-reviewer      reads the diff cold, runs the verification itself
-@scribe             DECISIONS.md if a real decision was made
+@mario-scribe       DECISIONS.md if a real decision was made
    ↑ repeat per slice
 Phase 5             run it, use it, screenshot it   ← blocks the reveal
 ```

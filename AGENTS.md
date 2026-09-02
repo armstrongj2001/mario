@@ -11,7 +11,7 @@ reads a root instruction file starts here.
 | File | What it is |
 |---|---|
 | `METHOD.md` | **The method.** Six phases, the gate, the first-run check. Read it in full. |
-| `roles/*.md` | The five roles — architect, implementer, code-reviewer, project-manager, scribe |
+| `roles/*.md` | The five roles — architect, implementer, code-reviewer, project-manager, scribe.<br>Claude Code binds all but `project-manager`, which Workforces owns; the scribe binds as `@mario-scribe`. |
 
 Everything else in this repo is a per-harness binding that points at those two. `agents/` is the
 Claude Code dialect, `skills/` and `commands/` are its skill and slash-command wiring. If you are

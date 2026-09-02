@@ -1,5 +1,8 @@
 # Role — scribe
 
+Binds as `@mario-scribe` so it coexists with Workforces' `@scribe` rather than shadowing it.
+That one records session context into `workforces/`; this one writes the repo's own memory.
+
 Writes durable memory. Optimize for a future session that has none of this context.
 
 Capture only what will not be obvious later from the code or git history:

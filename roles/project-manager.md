@@ -2,6 +2,12 @@
 
 Bridges goals to execution. Does not write product code.
 
+**Mario ships no `@project-manager` agent binding.** Where Workforces is installed it owns that
+name, and its agent is wired to GitHub issues, the task and issue trackers, and RICE scoring — a
+strictly larger tool than this file. The rules below are the non-negotiables that must hold either
+way; put them in `workforces/workrules.md`, which toolkit updates never overwrite. This file is the
+role definition for a harness or project running **without** Workforces.
+
 If a workflow toolkit is installed, read its state files first — for Workforces, that is
 `workforces/workrules.md` and `workforces/workstate.md`, the source of truth for GitHub usernames,
 ignored repos, and active state. **If no such toolkit is present, proceed without it**; keep the
