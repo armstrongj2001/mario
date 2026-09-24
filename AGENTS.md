@@ -10,23 +10,26 @@ reads a root instruction file starts here.
 
 | File | What it is |
 |---|---|
-| `METHOD.md` | **The method.** Six phases, the gate, the first-run check. Read it in full. |
-| `roles/*.md` | The five roles — architect, implementer, code-reviewer, project-manager, scribe.<br>Claude Code binds all but `project-manager`, which Workforces owns; the scribe binds as `@mario-scribe`. |
+| `METHOD.md` | **The method.** Greenfield gate, maintenance route, slice loop, first run. Read it in full. |
+| `roles/*.md` | The five roles — architect, implementer, code-reviewer, project-manager, scribe. Claude Code binds all but `project-manager`; the scribe binds as `@mario-scribe`. |
 
-Everything else in this repo is a per-harness binding that points at those two. `agents/` is the
-Claude Code dialect, `skills/` and `commands/` are its skill and slash-command wiring. If you are
-not Claude Code, ignore them — they contain no instructions the files above do not already carry.
+Everything else is a per-harness binding. `agents/`, `skills/`, and `commands/` are Claude Code
+wiring. The project-level portable pointer is `.mario/AGENTS.md`. Use the binding for your harness.
+
+**Codex:** also read `codex/AGENTS.md` at this mario root. It binds the shared roles to
+explicit Codex models and native subagent handoffs.
 
 ## Running the roles without subagent support
 
-Claude Code and Antigravity spawn each role as a separate agent with its own tool set, so the
-architect is *unable* to write code. If your harness has native subagents, bind the roles that way
-and keep the restriction.
+Some harnesses run each role as a separate agent with its own tool set, so the architect cannot
+write code. If your harness has native subagents, bind the roles that way and keep the restriction.
+The coordinator owns handoffs; delegated roles do not start a new chain.
 
 If it does not, run them as sequential passes in one session, and treat the boundary as a hard
 rule instead of an enforced one:
 
-1. **Plan** as the architect — output a plan, no code, no files touched.
+1. **Plan** as the architect — output a plan, no product code or files touched. A short-loop
+   in-thread plan is valid for cheap, reversible work.
 2. **Build** as the implementer — execute that plan exactly, deviations disclosed.
 3. **Review** as the code-reviewer — read the diff adversarially, run the tests yourself.
 
@@ -48,7 +51,6 @@ Every other part of this method exists somewhere else. These two do not:
 
 - **The NOT list.** What the product explicitly must never become, captured verbatim at Phase 1 and
   used to settle every later scope question. No brief contains it; you have to ask.
-- **The first run.** The app runs on localhost, at the viewport and in the scenario it will really
-  be used, and a person completes the primary path with real input before anyone calls it done.
-  Craft reviews measure whether a surface is *good*. Only this measures whether it is *usable* —
-  and a build can pass a dozen craft reviews with an invisible input and no buttons.
+- **The first run.** Exercise the actual UI, CLI, library, or binding in its use scenario with real
+  input. Report agent evidence separately from the human's usability verdict. A clean review
+  cannot close that acceptance checkpoint.

@@ -1,78 +1,126 @@
 #!/usr/bin/env bash
-# Links the base agent layer into ~/.claude/agents, overriding Workforces' agents by name.
-# Workforces files on disk are never modified — only which symlink wins.
-#
-#   bash link.sh            install/refresh
-#   bash link.sh --unlink   revert to Workforces agents
-#   bash link.sh --dry      preview
-
+# Install or remove only the mario-owned links in the explicit manifest.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 CLAUDE_DIR="${CLAUDE_HOME:-$HOME/.claude}"
-WF="${WORKFORCES_ROOT:-$HOME/antigravity/workforces}"
+CODEX_DIR="${CODEX_HOME:-$HOME/.codex}"
+TARGET=claude
 MODE=install
-[[ "${1:-}" == "--unlink" ]] && MODE=unlink
-[[ "${1:-}" == "--dry" ]]    && MODE=dry
 
-# Workforces agents retired by this layer (their role is covered by a base agent).
-# Name-collisions are handled by the link itself; these are the non-colliding ones.
-# design-pilot / design-reviewer: all design belongs to /impeccable, which rolls a real
-# direction from a seeded catalog instead of one model's taste. Both were removed from this
-# layer; retiring them here also stops Workforces' copies from filling the gap.
-RETIRE=(clean-coder design-pilot design-reviewer)
+usage() {
+  cat <<'USAGE'
+Usage: bash scripts/link.sh [--target claude|codex|all] [--dry | --unlink]
+       bash scripts/link.sh --help
+USAGE
+}
 
-mkdir -p "$CLAUDE_DIR/agents"
-echo "base agents → $CLAUDE_DIR/agents  (source: $ROOT)"
-
-for f in "$ROOT"/agents/*.md; do
-  n="$(basename "$f")"; dest="$CLAUDE_DIR/agents/$n"
-  if [[ -e "$dest" && ! -L "$dest" ]]; then echo "  SKIP (real file): $n"; continue; fi
-  case "$MODE" in
-    unlink)
-      if [[ "$(readlink "$dest" 2>/dev/null)" == "$f" ]]; then
-        rm "$dest"; echo "  REVERTED: $n"
-        [[ -f "$WF/agents/$n" ]] && ln -sfn "$WF/agents/$n" "$dest" && echo "    ↳ workforces $n restored"
-      fi ;;
-    dry)     [[ "$(readlink "$dest" 2>/dev/null)" == "$f" ]] || echo "  WOULD LINK: $n" ;;
-    install) ln -sfn "$f" "$dest"; echo "  LINKED: $n" ;;
+while (($#)); do
+  case "$1" in
+    --target)
+      if (($# < 2)); then echo "Missing value for --target" >&2; usage >&2; exit 2; fi
+      TARGET="$2"; shift 2 ;;
+    --dry)
+      if [[ "$MODE" != install ]]; then echo "--dry and --unlink are exclusive" >&2; exit 2; fi
+      MODE=dry; shift ;;
+    --unlink)
+      if [[ "$MODE" != install ]]; then echo "--dry and --unlink are exclusive" >&2; exit 2; fi
+      MODE=unlink; shift ;;
+    --help) usage; exit 0 ;;
+    *) echo "Unknown argument: $1" >&2; usage >&2; exit 2 ;;
   esac
 done
+case "$TARGET" in claude|codex|all) ;; *) echo "Invalid target: $TARGET" >&2; exit 2 ;; esac
 
-# skills/ and commands/ — same override semantics, applied only if the dirs exist.
-for pair in "skills:skills" "commands:commands"; do
-  src_dir="${pair%%:*}"; dst_dir="${pair##*:}"
-  [[ -d "$ROOT/$src_dir" ]] || continue
-  mkdir -p "$CLAUDE_DIR/$dst_dir"
-  for f in "$ROOT/$src_dir"/*; do
-    [[ -e "$f" ]] || continue
-    n="$(basename "$f")"; dest="$CLAUDE_DIR/$dst_dir/$n"
-    if [[ -e "$dest" && ! -L "$dest" ]]; then echo "  SKIP (real file): $n"; continue; fi
-    case "$MODE" in
-      unlink)  [[ "$(readlink "$dest" 2>/dev/null)" == "$f" ]] && rm "$dest" && echo "  REVERTED: $n" ;;
-      dry)     [[ "$(readlink "$dest" 2>/dev/null)" == "$f" ]] || echo "  WOULD LINK: $src_dir/$n" ;;
-      install) ln -sfn "$f" "$dest"; echo "  LINKED: $src_dir/$n" ;;
-    esac
+sources=()
+destinations=()
+checks=()
+add_link() {
+  sources+=("$1")
+  destinations+=("$2")
+  checks+=("$3")
+}
+owned_link() {
+  local src="$1" dest="$2"
+  [[ -L "$dest" ]] && { [[ "$(readlink "$dest")" == "$src" ]] || [[ "$dest" -ef "$src" ]]; }
+}
+if [[ "$TARGET" == claude || "$TARGET" == all ]]; then
+  for name in architect implementer code-reviewer mario-scribe; do
+    add_link "$ROOT/agents/$name.md" "$CLAUDE_DIR/agents/$name.md" file
   done
-done
+  add_link "$ROOT/skills/start-project" "$CLAUDE_DIR/skills/start-project" skill
+  for name in start-project seeya; do
+    add_link "$ROOT/commands/$name.md" "$CLAUDE_DIR/commands/$name.md" file
+  done
+fi
+if [[ "$TARGET" == codex || "$TARGET" == all ]]; then
+  for name in architect implementer code-reviewer mario-scribe; do
+    add_link "$ROOT/codex/agents/$name.toml" "$CODEX_DIR/agents/$name.toml" file
+  done
+fi
 
-# Sweep symlinks pointing at agents this layer no longer ships.
-for dest in "$CLAUDE_DIR"/agents/*.md; do
-  [[ -L "$dest" ]] || continue
-  tgt="$(readlink "$dest")"
-  [[ "$tgt" == "$ROOT/agents/"* && ! -e "$tgt" ]] || continue
-  case "$MODE" in
-    dry)     echo "  WOULD CLEAR (stale): $(basename "$dest")" ;;
-    *)       rm "$dest"; echo "  CLEARED (stale): $(basename "$dest")" ;;
-  esac
-done
+# Check the base and selected parent paths before making any changes. A symlink
+# directory could redirect writes outside the requested home.
+check_parent() {
+  local parent="$1"
+  while [[ "$parent" != / && "$parent" != . ]]; do
+    if [[ -L "$parent" || ( -e "$parent" && ! -d "$parent" ) ]]; then
+      echo "Conflict: parent path is not a real directory: $parent" >&2
+      return 1
+    fi
+    parent="$(dirname "$parent")"
+  done
+}
 
-for n in "${RETIRE[@]}"; do
-  dest="$CLAUDE_DIR/agents/$n.md"
-  case "$MODE" in
-    unlink)  [[ -f "$WF/agents/$n.md" && ! -e "$dest" ]] && ln -sfn "$WF/agents/$n.md" "$dest" && echo "  RESTORED: $n.md" ;;
-    dry)     [[ -L "$dest" ]] && echo "  WOULD RETIRE: $n.md" ;;
-    install) [[ -L "$dest" ]] && rm "$dest" && echo "  RETIRED: $n.md" ;;
-  esac
+failed=0
+for i in "${!sources[@]}"; do
+  src="${sources[$i]}"
+  dest="${destinations[$i]}"
+  check_parent "$(dirname "$dest")" || failed=1
+
+  if [[ "$MODE" != unlink ]]; then
+    if [[ "${checks[$i]}" == skill ]]; then
+      if [[ ! -d "$src" || ! -f "$src/SKILL.md" ]]; then
+        echo "Missing source skill: $src/SKILL.md" >&2
+        failed=1
+      fi
+    elif [[ ! -f "$src" ]]; then
+      echo "Missing source: $src" >&2
+      failed=1
+    fi
+    if [[ -L "$dest" ]]; then
+      if ! owned_link "$src" "$dest"; then
+        echo "Conflict: foreign symlink at $dest" >&2
+        failed=1
+      fi
+    elif [[ -e "$dest" ]]; then
+      echo "Conflict: existing entry at $dest" >&2
+      failed=1
+    fi
+  fi
 done
-exit 0
+if ((failed)); then
+  echo "Preflight failed; no links changed." >&2
+  exit 1
+fi
+
+for i in "${!sources[@]}"; do
+  src="${sources[$i]}"
+  dest="${destinations[$i]}"
+  if [[ "$MODE" == unlink ]]; then
+    if owned_link "$src" "$dest"; then
+      rm -- "$dest"
+      echo "REMOVED $dest"
+    elif [[ -e "$dest" || -L "$dest" ]]; then
+      echo "KEPT foreign entry $dest"
+    fi
+  elif [[ -L "$dest" ]]; then
+    echo "OK $dest"
+  elif [[ "$MODE" == dry ]]; then
+    echo "WOULD LINK $dest -> $src"
+  else
+    mkdir -p -- "$(dirname "$dest")"
+    ln -s -- "$src" "$dest"
+    echo "LINKED $dest -> $src"
+  fi
+done

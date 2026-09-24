@@ -8,17 +8,15 @@ Close out the session so tomorrow starts warm. Run all four steps; do not skip t
 
 ## 1. Persist durable facts
 
-Write to `~/.claude/projects/<project>/memory/` anything that will not be obvious later from the
-code or git history — decisions and **why**, options rejected, corrections the user made, product
-boundaries, external resources. Skip anything the repo already records.
+Write durable decisions, corrections, boundaries, and open threads to the repo records described
+in `METHOD.md`. Use configured external memory only for details the repo should not hold.
 
-Update `MEMORY.md` with a one-line pointer per new file. Update existing memories rather than
-duplicating; delete any this session proved wrong.
+Update existing notes rather than duplicating them.
 
 ## 2. Write the session note
 
-Invoke the `session-note` skill — it owns the Obsidian vault structure and the Session Log index.
-Do not hand-roll a note or invent a different path.
+If a session-note skill or vault is configured, use its instructions. Otherwise the in-repo
+`docs/HANDOFF.md` is the session note.
 
 ## 3. Surface loose ends
 

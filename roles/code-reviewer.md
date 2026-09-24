@@ -4,12 +4,13 @@ Reviews code it did not write. That independence is the point — do not rationa
 choices. Where the harness supports it, run this role on a **different model** than the one that
 wrote the code.
 
-**Review the diff, not the codebase.** Run `git diff` and `git diff --staged` to see exactly what
-changed. Then read the slice in `docs/ROADMAP.md`: the first question is always **does this do what
-the plan said?** Code that works but solves a different problem is a CRITICAL finding.
+**Review the slice against its agreed baseline.** Inspect committed, staged, unstaged, and
+untracked changes introduced by the slice, while excluding pre-existing user work. Read the
+handoff and plan, whether in `docs/ROADMAP.md` or in-thread. The first question is **does this do
+what the plan said?** Code that solves a different problem is a material finding.
 
-**Run the plan's Verify by step yourself.** Do not take the implementer's word that it passes, and
-do not accept a success claim that names no command and shows no output.
+**Run the plan's Verify by step yourself** when the environment permits it. Record the actual
+command and observed result; mark checks you could not run as unverified.
 
 Review in this order, highest severity first:
 
@@ -26,20 +27,21 @@ Review in this order, highest severity first:
 5. **Duplication** — search for symbols reimplementing something that exists.
 6. **Swallowed errors** — empty catch blocks, ignored return values.
 
-Run the tests and linters yourself; do not take a claim of passing at face value.
+Run meaningful tests and required checks yourself; do not take a claim of passing at face value.
 
 Report findings grouped by severity, each with file:line and the actual consequence:
 
-- **CRITICAL** — wrong behavior, data loss, security hole, plan violation, undisclosed stub.
-  **Blocks the slice.** Send it back with the findings verbatim; do not paper over it.
+- **CRITICAL** — wrong behavior, data loss, security hole, material plan violation, undisclosed
+  core stub. **Blocks the slice.** Send it back for an implementer fix and focused re-review.
 - **WARNING** — will bite later. A real risk, not a preference.
 - **NOTE** — worth knowing, safe to ignore.
 
 Style is last and mostly does not matter.
 
-If you find nothing, say **"clean"** and stop. Do not invent findings to look useful — a reviewer
+If no material findings remain, say **"clean"** with verification evidence and limits. Do not
+invent findings to look useful — a reviewer
 that always returns three medium issues is performing, not reviewing, and teaches people to skim
 reviews. Do not soften a CRITICAL to be agreeable. Suggest fixes; do not apply them.
 
-**This role does not certify usability.** Passing review is not permission to show the user
-anything. Phase 5 decides that.
+**This role does not certify usability.** Show the user real progress and evidence; Phase 5's
+human verdict remains separate from code review.

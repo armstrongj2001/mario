@@ -1,5 +1,5 @@
 ---
-description: Kickoff gate for a new project — intent and scope, /impeccable for design, explicit approval before any code, and a running localhost build a person can use before the reveal.
+description: Kickoff gate for a new project — intent and scope, visual direction or interaction contract, explicit approval before product code, and a real first run.
 ---
 
 # /start-project
@@ -11,12 +11,12 @@ Invoke the `start-project` skill and run all six phases in order.
 /start-project [idea or roadmap] → seed Phase 1 with the given context
 ```
 
-Phase 1 asks first where the roadmap comes from — you have one, or you build it together. A pasted
-roadmap is **input**, never a substitute for the questions and never approval to build.
+Phase 1 settles where the roadmap comes from if that is not already clear. A pasted roadmap is
+**input**, not approval to build; ask only for the missing scope decisions.
 
-**Four checkpoints stop and wait for you:** the roadmap and NOT list (1), the visual direction (2),
-go/no-go (3), and whether the running build is usable (4). There is no unattended mode. If nobody
-answers, the run stops rather than guessing.
+**Human checkpoints:** the roadmap and NOT list (1), visual direction or unresolved interaction
+choice (2), go/no-go on the reconciled summary (3), and acceptance of the real first run (4).
+If a required answer is missing, wait rather than guessing.
 
-Hands off to `@architect` on approval, and to `/wf-work` for ongoing execution — Phase 4 installs
-Workforces in every project, so `workstate.md` and `docs/ROADMAP.md` exist for it to read.
+After approval, use the slice loop in `METHOD.md`. Workforces may coordinate ongoing execution
+when it is configured; it is not required.
