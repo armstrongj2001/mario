@@ -2,8 +2,9 @@
 
 ## 2026-09-24 — Claude and Codex overhaul
 
-- Delivery: reviewed on `upgrade/claude-codex-workflow` in the existing Mario repo;
-  user authorized fast-forward/push to main and Obsidian/Notion closeout. No separate fork.
+- Delivery: implementation commit `a8209f9` reviewed on `upgrade/claude-codex-workflow`,
+  fast-forwarded into main and pushed to origin. Seven earlier local commits preserved.
+  Post-push comparison: 0 ahead, 0 behind; working tree clean. No separate fork or release tag.
 - Done: coherent greenfield/maintenance/resume routes; scope and human checkpoints
   preserved; bounded native-role handoffs; explicit model selection/failure handling;
   nonvisual first runs; safe dual-harness installation, diagnostics and Codex registration.
@@ -30,3 +31,7 @@
   requested; do not redo the overhaul, create a fork, remove Astra or replace Claude.
 - User correction: quality was the objective (“best it possibly can”), not token cost.
   User wants the session closed after delivery and notes; avoid reopening scope.
+- Session records written and read back: Obsidian
+  `Sessions/2026-09-21 Mario — Claude and Codex Upgrade.md` (session closed 2026-09-24),
+  with Session Log index entry; [detailed Notion rundown](https://app.notion.com/p/3e597c6ead7c8116b93bc7ea92536807)
+  under Coding Projects → Notes. This final documentation commit records those receipts.
