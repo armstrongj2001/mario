@@ -45,3 +45,9 @@
   `claude-sonnet-5`. Other roles not runtime-checked.
 - Verification: 36 tests OK; doctor `--source-only --target all` 29 PASS; fresh GitHub clone
   installed into an isolated home, doctor `--target all` 40 PASS.
+
+## 2026-09-25 — Roadmap refresh
+
+- Updated `docs/ROADMAP.md` to record the completed pinned-model/Fable slice and current
+  verification counts while preserving the pending human acceptance and named-dispatch failure.
+- User requested a local commit only; do not push this documentation refresh.

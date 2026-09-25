@@ -10,9 +10,11 @@
 
 > i meant to say the best it possibly can
 
-Preserve Claude's role architecture, model assignments, and tool lists. Keep Codex's
-Astra architect, Sol implementer, Terra reviewer, and Luna scribe. Improve reliability
-and output quality; no cost-minimization mandate. Work in the existing checkout.
+Preserve Claude's role architecture and tool lists. Claude uses `claude-opus-5-5` for the
+architect and implementer, `claude-sonnet-5` for the reviewer, and `claude-haiku-4-5` for
+the scribe, with `claude-fable-5-1` available as an opt-in architect. Keep Codex's Astra
+architect, Sol implementer, Terra reviewer, and Luna scribe. Improve reliability and
+output quality; no cost-minimization mandate. Work in the existing checkout.
 No separate Codex fork: both harnesses stay in this repository. On 2026-09-24 the user
 authorized completing installation and verification, moving the upgrade through a branch,
 merging/pushing main, and writing Obsidian plus Notion session records. This supersedes
@@ -30,8 +32,8 @@ records the next session can use. Installation must coexist with user configurat
 |---|---|---|---|
 | 1 — Coherent method | Agent can follow kickoff, maintenance, and resumption without contradictory gates or role instructions, including the nonvisual interaction contract and honest empty-state rules. | Independently walk all scenarios in `docs/WORKFLOW-CHECKS.md`; `git diff --check`. | Complete |
 | 2 — Usable bindings | Install Claude, Codex, or both safely; diagnose local setup without claiming runtime proof; preserve configured optional integrations and coexist with existing user configuration. | Temporary-directory installer integration tests; shell syntax checks; binding validation; independent review. | Complete; human acceptance pending |
-
 | 3 — Explicit Codex registration | Preserve user settings while registering the four named roles required by the tested client. | Config-preservation regression tests, independent review, live registration check, fresh named architect dispatch. | Complete; named dispatch blocked by client runtime |
+| 4 — Current Claude models and Fable opt-in | Pin the four default Claude roles to their current models and offer Fable 5.1 as an explicit architect choice without changing the Codex assignments. | Installer regression tests; source and installed binding diagnostics; dispatched reviewer transcript. | Complete |
 
 ## Acceptance boundaries
 
@@ -40,11 +42,11 @@ records the next session can use. Installation must coexist with user configurat
 - Human acceptance remains pending until a person tries the intended path and gives a verdict.
 - Each implementation slice receives independent review before the next starts.
 
-## Current verification
+## Current verification (2026-09-25)
 
-- `python3 -m unittest discover -s tests -q` — 34 tests OK.
-- `python3 scripts/doctor.py --source-only --target all` — 28 PASS, 0 FAIL.
+- `python3 -m unittest discover -s tests -q` — 36 tests OK.
+- `python3 scripts/doctor.py --source-only --target all` — 29 PASS, 0 FAIL.
 - `bash -n scripts/link.sh` and `git diff --check` — exit 0.
-- `python3 scripts/doctor.py --target all` — 39 PASS, 0 FAIL after live installation.
+- `python3 scripts/doctor.py --target all` — 40 PASS, 0 FAIL after live installation.
 - `python3 scripts/register_codex.py --check` — PASS all four Codex agents are registered.
 - See `docs/WORKFLOW-CHECKS.md` for runtime receipts and limits.
