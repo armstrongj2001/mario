@@ -40,13 +40,6 @@
 
 </details>
 
-<details>
-<summary>The kickoff gate in pixel art</summary>
-
-![Mario kickoff gate pixel art](docs/mario-hero-pixel.png)
-
-</details>
-
 # mario
 
 Engineering discipline for AI coding agents: settle scope, plan one slice, build it,
@@ -278,3 +271,9 @@ backlog toolkit mario is built to sit alongside. It is optional; mario falls bac
 records when Workforces is not installed.
 
 MIT licensed.
+
+---
+
+## The kickoff gate
+
+![Mario kickoff gate pixel art](docs/mario-hero-pixel.png)
