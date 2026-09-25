@@ -222,4 +222,10 @@ diagnostic's expected assignments consistent when intentionally changing them. P
 append-only decision history. Real runtime discovery and human acceptance should be
 recorded separately from source checks and installation tests.
 
+## Credits
+
+[Workforces](https://github.com/wedigcode/workforces) by wedigcode is the workflow and
+backlog toolkit mario is built to sit alongside. It is optional; mario falls back to its own
+records when Workforces is not installed.
+
 MIT licensed.
