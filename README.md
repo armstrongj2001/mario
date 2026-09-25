@@ -1,3 +1,5 @@
+Use Mario with your favorite AI coding agent—in your IDE or terminal. [Connect it to your project](#connect-a-project) through the agent’s instruction file, and use the same scope → plan → build → review → run workflow from kickoff through ongoing development.
+
 ![Mario warp pipe gate: jumbled code in, star-powered clean code out](docs/mario-gate.gif)
 
 <details>

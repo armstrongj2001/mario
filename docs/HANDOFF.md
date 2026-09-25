@@ -51,3 +51,7 @@
 - Updated `docs/ROADMAP.md` to record the completed pinned-model/Fable slice and current
   verification counts while preserving the pending human acceptance and named-dispatch failure.
 - User requested a local commit only; do not push this documentation refresh.
+
+## 2026-09-25 — README entry point
+
+- User wants IDE/terminal use and bring-your-own coding-agent setup prominent in the README.
