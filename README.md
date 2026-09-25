@@ -33,9 +33,11 @@ Exact Codex assignments live in `codex/agents/*.toml` and are listed in
 
 ## Start using it
 
-From a local checkout, preview and install the harness you use:
+Clone it, then preview and install the harness you use:
 
 ```bash
+git clone https://github.com/armstrongj2001/mario.git && cd mario
+
 bash scripts/link.sh --target claude --dry
 bash scripts/link.sh --target claude
 
@@ -65,8 +67,7 @@ utilities are required; WSL is suitable on Windows.
 Installation creates links back to this checkout. It validates the complete selected
 manifest before writing. Existing matching links are kept; other files, directories,
 and links are reported as conflicts, with no selected links changed. Review those
-conflicts yourself; the installer does not replace another toolkit's agents. It no
-longer retires or restores Workforces links. Symlinked destination parent directories
+conflicts yourself; the installer does not replace another toolkit's agents. Symlinked destination parent directories
 are rejected to avoid redirecting writes. Unexpected I/O failures can still interrupt
 an install; rerunning it checks the current state.
 
@@ -200,10 +201,11 @@ describes Codex's native subagents and configuration behavior.
 | `METHOD.md`, `roles/*.md` | Shared workflow and role responsibilities |
 | `AGENTS.md` | Portable entry point |
 | `agents/`, `skills/`, `commands/` | Claude bindings and commands |
+| `variants/fable/` | Opt-in Claude Fable 5.1 architect, linked by `link.sh --fable` |
 | `codex/` | Codex routing and model/permission bindings |
 | `scripts/link.sh`, `scripts/doctor.py` | Installation and structural diagnostics |
 | `scripts/register_codex.py` | Explicit Codex role registration for compatible clients |
-| `tests/test_setup.py` | Isolated installer and diagnostic regression tests |
+| `tests/` | Isolated installer, diagnostic, and registration regression tests |
 | `docs/` | Decisions, roadmap, acceptance scenarios, and handoff |
 
 Run the verification before handing over a change:
@@ -220,4 +222,4 @@ diagnostic's expected assignments consistent when intentionally changing them. P
 append-only decision history. Real runtime discovery and human acceptance should be
 recorded separately from source checks and installation tests.
 
-MIT licensed. Claude plugin metadata remains at v0.8.0; this upgrade does not create a new release tag.
+MIT licensed.

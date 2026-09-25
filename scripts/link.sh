@@ -33,7 +33,7 @@ while (($#)); do
       if [[ "$MODE" != install ]]; then echo "--dry and --unlink are exclusive" >&2; exit 2; fi
       MODE=unlink; shift ;;
     --fable|--no-fable)
-      if [[ -n "$FABLE" ]]; then echo "--fable and --no-fable are exclusive" >&2; exit 2; fi
+      if [[ -n "$FABLE" && "$FABLE" != "${1#--}" ]]; then echo "--fable and --no-fable are exclusive" >&2; exit 2; fi
       FABLE="${1#--}"; shift ;;
     --help) usage; exit 0 ;;
     *) echo "Unknown argument: $1" >&2; usage >&2; exit 2 ;;
@@ -53,7 +53,7 @@ if [[ -z "$FABLE" && "$TARGET" != codex && "$MODE" != unlink ]]; then
   if owned_link "$FABLE_ARCHITECT" "$CLAUDE_DIR/agents/architect.md"; then
     FABLE=fable
   elif [[ -t 0 ]] && ! owned_link "$DEFAULT_ARCHITECT" "$CLAUDE_DIR/agents/architect.md"; then
-    read -r -p "Bind the Claude architect to Claude Fable 5.1? Higher cost than the default Opus 5.5. [y/N] " reply
+    read -r -p "Bind the Claude architect to Claude Fable 5.1? Higher cost than the default Opus 5.5. [y/N] " reply || reply=
     [[ "$reply" =~ ^[Yy] ]] && FABLE=fable
   fi
 fi

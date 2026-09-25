@@ -1,6 +1,6 @@
 ---
 name: mario-scribe
-description: Use at session end, at milestones, or on /wf-context save. Distills session context, decisions, and corrections into persistent notes. Zero narrative.
+description: Use at session end, at milestones, or on a Workforces /wf-context save when installed. Distills session context, decisions, and corrections into persistent notes. Zero narrative.
 tools: Read, Grep, Write
 model: claude-haiku-4-5
 ---

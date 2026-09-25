@@ -35,3 +35,13 @@
   `Sessions/2026-09-21 Mario — Claude and Codex Upgrade.md` (session closed 2026-09-24),
   with Session Log index entry; [detailed Notion rundown](https://app.notion.com/p/3e597c6ead7c8116b93bc7ea92536807)
   under Coding Projects → Notes. This final documentation commit records those receipts.
+
+## 2026-09-25 — Claude models pinned; Fable opt-in
+
+- Claude bindings: architect and implementer `claude-opus-5-5`, reviewer `claude-sonnet-5`,
+  scribe `claude-haiku-4-5`; opt-in `claude-fable-5-1` architect via `link.sh --fable`.
+  This supersedes "Claude model assignments preserved" above.
+- Runtime evidence: a dispatched code-reviewer's transcript recorded every response from
+  `claude-sonnet-5`. Other roles not runtime-checked.
+- Verification: 36 tests OK; doctor `--source-only --target all` 29 PASS; fresh GitHub clone
+  installed into an isolated home, doctor `--target all` 40 PASS.
