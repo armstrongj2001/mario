@@ -179,6 +179,14 @@ The shared entry point loads the method, roles, and applicable harness binding. 
 only to `METHOD.md` and `roles/` misses Codex's model-routing instructions. The installer
 does not alter project files or configure a remote, vault, editor, or other toolkit.
 
+### Optional Notion session notes
+
+A project can opt in to short Notion closeout notes while keeping repository records primary.
+This requires an existing connected Notion app or MCP connector; Mario does not install or
+authorize one automatically. Claude users can run `/seeya`; in other agents, ask to close the
+session using Mario's session-record procedure. Setup, receipt, verification, and duplicate-safe
+retry rules are in [docs/NOTION-SESSION-NOTES.md](docs/NOTION-SESSION-NOTES.md).
+
 ## Check the setup
 
 ```bash

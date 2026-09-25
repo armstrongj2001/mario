@@ -9,14 +9,18 @@ Close out the session so tomorrow starts warm. Run all four steps; do not skip t
 ## 1. Persist durable facts
 
 Write durable decisions, corrections, boundaries, and open threads to the repo records described
-in `METHOD.md`. Use configured external memory only for details the repo should not hold.
+in `METHOD.md`. The repository records are authoritative. Configured external notes may carry a
+secondary copy of the same durable facts without expanding the session's scope.
 
 Update existing notes rather than duplicating them.
 
 ## 2. Write the session note
 
-If a session-note skill or vault is configured, use its instructions. Otherwise the in-repo
-`docs/HANDOFF.md` is the session note.
+The in-repo `docs/HANDOFF.md` is the primary session note. If a session-note skill or vault is
+configured, use its instructions too. If the active project opts in to Notion, follow
+[`docs/NOTION-SESSION-NOTES.md`](../docs/NOTION-SESSION-NOTES.md) after the local records are
+current. Missing configuration, authorization, connector tools, destination, or usable schema
+blocks only the external note; report it and finish the local closeout.
 
 ## 3. Surface loose ends
 
@@ -29,7 +33,8 @@ Check and report honestly, without fixing anything unasked:
 ## 4. Handoff
 
 Print a short block: where things stand, the single best next action, and any blocker.
-Keep it scannable — this is the first thing read tomorrow, likely with no other context.
+Keep it scannable — this is the first thing read tomorrow, likely with no other context. Include
+the external-note receipt status and page ID or URL when known, or the external blocker.
 
 ---
 

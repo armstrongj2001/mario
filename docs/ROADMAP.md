@@ -34,6 +34,7 @@ records the next session can use. Installation must coexist with user configurat
 | 2 — Usable bindings | Install Claude, Codex, or both safely; diagnose local setup without claiming runtime proof; preserve configured optional integrations and coexist with existing user configuration. | Temporary-directory installer integration tests; shell syntax checks; binding validation; independent review. | Complete; human acceptance pending |
 | 3 — Explicit Codex registration | Preserve user settings while registering the four named roles required by the tested client. | Config-preservation regression tests, independent review, live registration check, fresh named architect dispatch. | Complete; named dispatch blocked by client runtime |
 | 4 — Current Claude models and Fable opt-in | Pin the four default Claude roles to their current models and offer Fable 5.1 as an explicit architect choice without changing the Codex assignments. | Installer regression tests; source and installed binding diagnostics; dispatched reviewer transcript. | Complete |
+| 5 — Optional Notion session notes | Let a project explicitly opt in to local-first Notion closeout notes with verified receipts and duplicate-safe retries, without changing role tools or requiring Notion. | Documentation checks; walk disabled, success, missing connector, incompatible schema, known-page retry, uncertain-create recovery, and ambiguous-match cases; live connected first run. | Implemented; live verification pending |
 
 ## Acceptance boundaries
 

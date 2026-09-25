@@ -50,8 +50,15 @@
 
 - Updated `docs/ROADMAP.md` to record the completed pinned-model/Fable slice and current
   verification counts while preserving the pending human acceptance and named-dispatch failure.
-- User requested a local commit only; do not push this documentation refresh.
+- Committed and pushed to main with the README art commits.
 
 ## 2026-09-25 — README entry point
 
 - User wants IDE/terminal use and bring-your-own coding-agent setup prominent in the README.
+
+## 2026-09-25 — Optional Notion closeout notes
+
+- Added the local-first Notion opt-in contract and wired it into the method, scribe, `/seeya`,
+  and README. Live connector verification remains pending; no publish success is recorded here.
+- Uses the existing connector without new SDKs, secrets, personal IDs, schema changes, or
+  expanded scribe tools. The user wants a multi-provider router kept as an idea only.

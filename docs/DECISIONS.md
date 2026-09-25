@@ -96,3 +96,15 @@
 - Because: the user wants the bindings to name the current models, and Fable's price keeps
   most users off it. The variant sits outside `agents/` so plugin discovery sees one architect.
 - Revisit if: a model is superseded or Fable pricing drops toward Opus.
+
+## 2026-09-25 — Optional Notion notes stay local-first and connector-based
+
+- Chose: an ignored per-project opt-in and the user's existing Notion connector, with stable
+  session keys, local receipts, read-back verification, and duplicate-safe recovery.
+- Over: automatic publishing from historical URLs, tracked workspace identifiers, custom SDKs,
+  schema mutation, or expanding the scribe's tools.
+- Because: repository records must remain portable and complete when Notion is unavailable, while
+  explicit opt-in can add a useful secondary session note without storing secrets or duplicating
+  pages after uncertain writes.
+- Revisit if: users need several interchangeable note providers. A provider router is an idea
+  only; this slice does not implement one.

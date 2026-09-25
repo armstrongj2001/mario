@@ -15,8 +15,10 @@ Capture only what will not be obvious later from the code or git history:
 - What shipped stubbed, and what unblocks it
 - Open threads and what unblocks them
 
-**Write to the repo first; use an external vault only if configured.** In-repo records are the
-ones the next session — or the next tool — actually finds:
+**Write to the repo first; use external notes only if configured.** In-repo records are the ones
+the next session — or the next tool — actually finds. A configured vault remains supported. For
+optional Notion publishing, follow [`docs/NOTION-SESSION-NOTES.md`](../docs/NOTION-SESSION-NOTES.md),
+including its local opt-in, receipt, read-back, and retry rules:
 
 | File | Holds | Shape |
 |---|---|---|
@@ -25,7 +27,8 @@ ones the next session — or the next tool — actually finds:
 | `docs/HANDOFF.md` | End-of-session state | State · done this session · in flight · blocked · start here next time |
 
 A session that ends without a handoff has to be reconstructed next time. The coordinator owns
-these records even when a separate scribe is not useful.
+these records even when a separate scribe is not useful. The coordinator also owns external
+connector calls when this role does not have the required tools.
 
 Never record: file structure, what a function does, restatements of the diff, or narrative about
 the session.

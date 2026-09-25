@@ -161,4 +161,7 @@ create a remote or publish without the user's authorization.
 
 Record decisions with why and when to revisit, deferred findings with status, and a brief
 handoff with state, completed work, blockers, and the next action. Use in-repo records first;
-optional configured external notes are secondary. On resume, read the records before acting.
+optional configured external notes are secondary. A project may opt in to Notion session notes
+through its ignored local configuration; follow
+[the Notion session-note procedure](docs/NOTION-SESSION-NOTES.md) for authorization, receipts,
+read-back verification, and duplicate-safe retries. On resume, read the records before acting.
