@@ -1,3 +1,52 @@
+![Mario warp pipe gate: jumbled code in, star-powered clean code out](docs/mario-gate.gif)
+
+<details>
+<summary>The kickoff gate in ASCII</summary>
+
+```text
+                                 ___  ___  ___  ______ _____ _____
+                                 |  \/  | / _ \ | ___ \_   _|  _  |
+                                 | .  . |/ /_\ \| |_/ / | | | | | |
+                                 | |\/| ||  _  ||    /  | | | | | |
+                                 | |  | || | | || |\ \ _| |_\ \_/ /
+                                 \_|  |_/\_| |_/\_| \_|\___/ \___/
+
+
+
+                                       No code before scope.
+
+====================================================================================================
+
+            #$%&@#*?!$%&         ──▶  ╔════════════════════╗  ──▶     { settle_scope(); }
+            &@#*$%!?#@$%&        ──▶  ║                    ║  ──▶     { plan_slice();   }
+             #@%&$#!?*&@         ──▶  ║      KICKOFF       ║  ──▶     { architect();    }
+            $%!@#&*?$#&%         ──▶  ║       GATE         ║  ──▶     { implement();    }
+             @#$%!&?*#@&         ──▶  ║                    ║  ──▶     { review();       }
+            %&#$@!?*#&$%         ──▶  ║   NO SCOPE →       ║  ──▶     { fix();          }
+             $#@%&*!?#@&         ──▶  ║   NO CODE          ║  ──▶     { scribe_log();   }
+            !@#$%&*?#@$%         ──▶  ║                    ║  ──▶     { ship();         }
+             #%&$@#!?*&%         ──▶  ╚════════════════════╝  ──▶
+
+====================================================================================================
+
+              ┌───────────┐      ┌─────────────┐      ┌───────────────┐      ┌────────┐
+              │ Architect │ ───▶ │ Implementer │ ───▶ │ Code Reviewer │ ───▶ │ Scribe │
+              └───────────┘      └─────────────┘      └───────────────┘      └────────┘
+
+                       coordinator owns scope, dispatch, and the final report
+
+                         mario: engineering discipline for AI coding agents
+```
+
+</details>
+
+<details>
+<summary>The kickoff gate in pixel art</summary>
+
+![Mario kickoff gate pixel art](docs/mario-hero-pixel.png)
+
+</details>
+
 # mario
 
 Engineering discipline for AI coding agents: settle scope, plan one slice, build it,
