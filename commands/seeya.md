@@ -34,7 +34,9 @@ Check and report honestly, without fixing anything unasked:
 
 Print a short block: where things stand, the single best next action, and any blocker.
 Keep it scannable — this is the first thing read tomorrow, likely with no other context. Include
-the external-note receipt status and page ID or URL when known, or the external blocker.
+the external-note status or blocker in tracked repository records. Keep destination IDs, page
+IDs, and page URLs in the ignored local receipt; the user-facing message may include a verified
+page link.
 
 ---
 

@@ -59,6 +59,17 @@
 ## 2026-09-25 — Optional Notion closeout notes
 
 - Added the local-first Notion opt-in contract and wired it into the method, scribe, `/seeya`,
-  and README. Live connector verification remains pending; no publish success is recorded here.
+  and README. Agent first run passed: create read-back confirmed parent, session key, and content;
+  repeat closeout fetched and updated the same saved page; exact-title query returned one page.
+  Private destination and page identifiers remain in the ignored local receipt.
 - Uses the existing connector without new SDKs, secrets, personal IDs, schema changes, or
   expanded scribe tools. The user wants a multi-provider router kept as an idea only.
+- Requested role identities, not backend attestation: planner `/root/notion_plan` on Astra;
+  implementer `/root/refresh_roadmap` on Sol; reviewer `/root/review_claude_fallback` on Terra.
+- Independent Terra review clean; `python3 -m unittest discover -s tests -q` — 36 tests OK;
+  `python3 scripts/doctor.py --source-only --target all` — 29 PASS, 0 FAIL;
+  `git diff --check` — exit 0. Human acceptance remains pending.
+- Concurrent Claude commit `e52f34e` captured the initial tracked changes; final guide and
+  receipt refinements complete locally. No push performed by this task.
+- Next closeout: read the project's ignored session-note configuration, refresh local records,
+  and publish through the connected Notion tools using the saved receipt for retries.
