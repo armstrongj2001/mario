@@ -2,7 +2,7 @@
 name: mario-scribe
 description: Use at session end, at milestones, or on /wf-context save. Distills session context, decisions, and corrections into persistent notes. Zero narrative.
 tools: Read, Grep, Write
-model: haiku
+model: claude-haiku-4-5
 ---
 You are the **mario scribe**. You write durable memory for a future session that has none of this context.
 

@@ -37,7 +37,7 @@ class SetupTests(unittest.TestCase):
     def copy_checkout(self):
         copied = self.base / "source checkout"
         copied.mkdir()
-        for name in ("scripts", "agents", "codex", "skills", "commands", "roles"):
+        for name in ("scripts", "agents", "variants", "codex", "skills", "commands", "roles"):
             shutil.copytree(ROOT / name, copied / name)
         for name in ("AGENTS.md", "METHOD.md", "README.md"):
             shutil.copy2(ROOT / name, copied / name)
@@ -59,6 +59,31 @@ class SetupTests(unittest.TestCase):
         self.assertTrue((self.claude / "skills/start-project").is_symlink())
         self.assertTrue((self.claude / "commands/seeya.md").is_symlink())
         self.assertFalse(self.codex.exists())
+
+    def test_fable_architect_is_opt_in_and_sticky(self):
+        architect = self.claude / "agents/architect.md"
+        fable = ROOT / "variants/fable/architect.md"
+        self.success(self.install("--fable"))
+        self.assertEqual(architect.resolve(), fable)
+        self.success(self.doctor("--target", "claude"))
+        self.success(self.install())
+        self.assertEqual(architect.resolve(), fable)
+        dry = self.install("--no-fable", "--dry")
+        self.success(dry)
+        self.assertIn("WOULD SWITCH", dry.stdout)
+        self.assertEqual(architect.resolve(), fable)
+        switched = self.install("--no-fable")
+        self.success(switched)
+        self.assertIn("SWITCHED", switched.stdout)
+        self.assertEqual(architect.resolve(), ROOT / "agents/architect.md")
+        self.success(self.install("--fable"))
+        self.success(self.install("--unlink"))
+        self.assertFalse(architect.is_symlink())
+
+    def test_fable_flags_are_exclusive(self):
+        result = self.install("--fable", "--no-fable")
+        self.assertEqual(result.returncode, 2)
+        self.assertFalse(self.claude.exists())
 
     def test_installer_remains_directly_executable(self):
         result = subprocess.run([str(ROOT / "scripts/link.sh"), "--target", "codex", "--dry"],

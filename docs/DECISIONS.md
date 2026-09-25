@@ -86,3 +86,13 @@
   registration. This residual check-to-replace race is documented.
 - Revisit if: Codex changes its discovery mechanism. Keep configured model identity,
   runtime-exposed metadata, and backend attestation distinct.
+
+## 2026-09-25 — Claude bindings pinned to current models; Fable opt-in
+
+- Chose: pinned IDs — architect and implementer `claude-opus-5-5`, reviewer
+  `claude-sonnet-5`, scribe `claude-haiku-4-5`. `claude-fable-5-1` is an opt-in architect
+  variant, asked on first interactive install and switched with `--fable` / `--no-fable`.
+- Over: floating aliases; Fable by default.
+- Because: the user wants the bindings to name the current models, and Fable's price keeps
+  most users off it. The variant sits outside `agents/` so plugin discovery sees one architect.
+- Revisit if: a model is superseded or Fable pricing drops toward Opus.

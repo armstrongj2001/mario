@@ -12,10 +12,10 @@ engine. The coordinator must actually dispatch the roles and show verification e
 
 | Role | Responsibility | Claude Code | Codex |
 |---|---|---|---|
-| Architect | Resolve design decisions and plan consequential changes | Sonnet | Astra, high reasoning |
-| Implementer | Build the agreed slice and verify it | Opus | Sol, high reasoning |
-| Code reviewer | Independently check the diff and run meaningful verification | Sonnet | Terra, high reasoning |
-| Mario scribe | Persist decisions, corrections, and handoff state | Haiku | Luna, medium reasoning |
+| Architect | Resolve design decisions and plan consequential changes | Opus 5.5 (Fable 5.1 opt-in) | Astra, high reasoning |
+| Implementer | Build the agreed slice and verify it | Opus 5.5 | Sol, high reasoning |
+| Code reviewer | Independently check the diff and run meaningful verification | Sonnet 5 | Terra, high reasoning |
+| Mario scribe | Persist decisions, corrections, and handoff state | Haiku 4.5 | Luna, medium reasoning |
 
 The coordinator owns scope, dispatch, and the final report. It is not another required
 subagent. Backlog management belongs to an installed workflow tool, or the fallback
@@ -28,7 +28,8 @@ unresolved material findings or high-risk concerns, a fresh Astra review can sup
 Terra, followed by fixes and a focused re-review. More agents alone do not improve quality.
 
 Exact Codex assignments live in `codex/agents/*.toml` and are listed in
-[codex/AGENTS.md](codex/AGENTS.md). Claude models and tool lists remain in `agents/*.md`.
+[codex/AGENTS.md](codex/AGENTS.md). Claude models are pinned by ID, with tool lists, in
+`agents/*.md`; the opt-in Fable architect lives in `variants/fable/architect.md`.
 
 ## Start using it
 
@@ -44,6 +45,10 @@ bash scripts/link.sh --target codex
 # Or install both:
 bash scripts/link.sh --target all
 ```
+
+The first interactive Claude install asks whether to bind the architect to Claude Fable
+5.1, which costs more than the default Opus 5.5. Later runs keep the installed choice;
+switch with `--fable` or `--no-fable`. Plugin installs use the Opus 5.5 architect.
 
 The default command, `bash scripts/link.sh`, still targets Claude. Claude also supports
 its existing plugin installation:

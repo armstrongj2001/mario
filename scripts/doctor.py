@@ -17,11 +17,14 @@ CODEX = {
     "mario-scribe": ("gpt-5.6-luna", "medium", "workspace-write"),
 }
 CLAUDE = {
-    "architect": ("sonnet", "Read, Grep, Glob"),
-    "implementer": ("opus", "Read, Write, Edit, Bash, Glob, Grep"),
-    "code-reviewer": ("sonnet", "Read, Grep, Glob, Bash"),
-    "mario-scribe": ("haiku", "Read, Grep, Write"),
+    "architect": ("claude-opus-5-5", "Read, Grep, Glob"),
+    "implementer": ("claude-opus-5-5", "Read, Write, Edit, Bash, Glob, Grep"),
+    "code-reviewer": ("claude-sonnet-5", "Read, Grep, Glob, Bash"),
+    "mario-scribe": ("claude-haiku-4-5", "Read, Grep, Write"),
 }
+FABLE_ARCHITECT = ROOT / "variants/fable/architect.md"
+CLAUDE_VARIANTS = {FABLE_ARCHITECT: ("architect", "claude-fable-5-1", "Read, Grep, Glob")}
+ALTERNATES = {ROOT / "agents/architect.md": FABLE_ARCHITECT}
 
 
 class Report:
@@ -81,18 +84,20 @@ def check_sources(report: Report, target: str, entries: list[tuple[Path, Path, s
         report.check(f"source {source.relative_to(ROOT)}", valid)
 
     if target in ("claude", "all"):
-        for name, (model, tools) in CLAUDE.items():
-            path = ROOT / "agents" / f"{name}.md"
+        bindings = {ROOT / "agents" / f"{name}.md": (name, *spec) for name, spec in CLAUDE.items()}
+        bindings.update(CLAUDE_VARIANTS)
+        for path, (name, model, tools) in bindings.items():
+            label = f"Claude binding {path.relative_to(ROOT)}"
             if not path.is_file():
+                report.check(label, False, "missing")
                 continue
             try:
                 meta = {key.strip(): value.strip() for key, value in frontmatter(path).items()}
                 good = (meta.get("name") == name and meta.get("model") == model
                         and meta.get("tools") == tools)
-                report.check(f"Claude binding {name}", good,
-                             "" if good else "name/model/tools mismatch")
+                report.check(label, good, "" if good else "name/model/tools mismatch")
             except (ValueError, OSError) as exc:
-                report.check(f"Claude binding {name}", False, str(exc))
+                report.check(label, False, str(exc))
     if target in ("codex", "all"):
         routing = ROOT / "codex/AGENTS.md"
         report.check("source codex/AGENTS.md", routing.is_file())
@@ -130,8 +135,11 @@ def check_sources(report: Report, target: str, entries: list[tuple[Path, Path, s
 
 def check_links(report: Report, entries: list[tuple[Path, Path, str]]) -> None:
     for source, dest, _ in entries:
+        accepted = {source.resolve(strict=False)}
+        if source in ALTERNATES:
+            accepted.add(ALTERNATES[source].resolve(strict=False))
         try:
-            good = dest.is_symlink() and dest.resolve(strict=False) == source.resolve(strict=False)
+            good = dest.is_symlink() and dest.resolve(strict=False) in accepted
         except (OSError, RuntimeError):
             good = False
         report.check(f"installed {dest}", good,
