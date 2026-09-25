@@ -73,3 +73,15 @@
   receipt refinements complete locally. No push performed by this task.
 - Next closeout: read the project's ignored session-note configuration, refresh local records,
   and publish through the connected Notion tools using the saved receipt for retries.
+
+## 2026-09-25 — Claude session closeout
+
+- Claude session: pinned models and Fable opt-in (`52578a7`), prompt EOF fix and README
+  onboarding (`04b20b8`), Workforces credit to wedigcode with the scribe's `/wf-context`
+  trigger removed (`76f506c`), stale handoff line fixed (`e52f34e`). All pushed.
+- Open: `docs/mario-gate.gif` depicts Nintendo's Mario character in a public repo; user chose
+  to leave it for now. Moving art out of the repo (hosted image URLs) was discussed and deferred;
+  the images stay in git history regardless.
+- Idea only: single role→model manifest per provider, a `/switch <provider>` handoff command,
+  and cross-provider review (e.g. Claude builds, Codex reviews). Muse not yet in the repo.
+- External note: Claude-labelled Notion session note; status in the ignored local receipt.
