@@ -1,0 +1,26 @@
+name: Native setup
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  setup:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python: ["3.10", "3.12"]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - name: Unit and integration tests
+        run: python -m unittest discover -s tests -q
+      - name: Source diagnostics
+        run: python scripts/doctor.py --source-only --target all
+      - name: Shell launcher syntax
+        if: runner.os != 'Windows'
+        run: bash -n scripts/link.sh

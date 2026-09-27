@@ -85,3 +85,22 @@
 - Idea only: single role→model manifest per provider, a `/switch <provider>` handoff command,
   and cross-provider review (e.g. Claude builds, Codex reviews). Muse not yet in the repo.
 - External note: Claude-labelled Notion session note; status in the ignored local receipt.
+
+## 2026-09-26 — Native platform setup
+
+- In progress on `portability/native-platforms` from `0ff4076`: native Python installer,
+  copy-ownership receipts, managed-copy doctor/registration, plugin and absolute project routes,
+  representation-preservation rules, platform CI, and plugin manifests at 0.9.1.
+- Windows non-admin Python 3.12 lifecycle passed on NTFS, including repeat install, registration,
+  project/plugin diagnostics, Fable switching, malformed drive-receipt rejection with outside
+  sentinel preservation, and uninstall. The final suite passed 44 tests with six narrow Windows
+  skips. Local Linux passes 51 tests with one Windows-only skip.
+- Local verification: 51 tests OK with one Windows-only skip; source doctor 32 PASS, 0 FAIL;
+  shell syntax, byte representation audit, and `git diff --check` passed. Terra's drive-path
+  finding, exact receipt-mapping finding, receipt/generated destination-alias findings, and source
+  recheck finding are fixed; focused re-review, hosted
+  macOS/Linux/Windows CI, and human acceptance remain pending. Do not claim native macOS
+  certification yet.
+- Root resolution now prefers an explicit absolute handoff/project path and validates checkout,
+  plugin, and project roots independently. Provider-router work remains an idea only; Notion
+  closeout behavior and all role model/tool assignments are unchanged.

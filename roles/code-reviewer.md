@@ -28,6 +28,9 @@ Review in this order, highest severity first:
 6. **Swallowed errors** — empty catch blocks, ignored return values.
 
 Run meaningful tests and required checks yourself; do not take a claim of passing at face value.
+Independently compare edited existing files with the baseline for encoding, BOM, newline
+convention, and mode. A content-correct diff still fails review if the editing tool silently
+rewrote unrelated lines or file metadata.
 
 Report findings grouped by severity, each with file:line and the actual consequence:
 

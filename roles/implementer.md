@@ -18,6 +18,9 @@ Executes plans. Does not redesign them mid-flight.
 - Secrets stay in the project's configured secret store or ignored local environment; never
   hardcode or commit them.
 - Match the surrounding code's idiom, naming, and comment density. No tutorial comments.
+- Inspect each existing file's encoding, BOM, newlines, and mode before editing. Preserve them
+  with a byte-aware or explicitly newline-aware edit, then verify the representation afterward.
+  Do not use `sed -i` or a bulk normalizer when it could rewrite the whole file.
 
 **Found something broken outside your slice? Log it to `docs/PUNCHLIST.md` and leave it alone.**
 Fixing it tangles two changes into one diff and the review can no longer tell them apart. The

@@ -1,6 +1,7 @@
 """Live-client registration must preserve user configuration, including on failure."""
 import os
 from pathlib import Path
+import json
 import stat
 import subprocess
 import sys
@@ -17,8 +18,11 @@ class RegistrationTests(unittest.TestCase):
         self.addCleanup(self.tmp.cleanup)
         self.home = Path(self.tmp.name) / "codex home"
         self.env = dict(os.environ, CODEX_HOME=str(self.home))
-        subprocess.run(["bash", str(ROOT / "scripts/link.sh"), "--target", "codex"],
-                       env=self.env, capture_output=True, check=True)
+        subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--target", "codex",
+             "--mode", "copy"],
+            env=self.env, capture_output=True, check=True,
+        )
         self.config = self.home / "config.toml"
 
     def run_register(self, *args):
@@ -46,11 +50,13 @@ class RegistrationTests(unittest.TestCase):
         self.config.chmod(0o640)
         self.success(self.run_register())
         self.assertTrue(self.config.read_bytes().startswith(original))
-        self.assertEqual(stat.S_IMODE(self.config.stat().st_mode), 0o640)
-        backups = [p for p in self.home.iterdir() if p.is_file() and p != self.config]
+        if os.name != "nt":
+            self.assertEqual(stat.S_IMODE(self.config.stat().st_mode), 0o640)
+        backups = list(self.home.glob("config.toml.mario-backup*"))
         self.assertEqual(len(backups), 1)
         self.assertEqual(backups[0].read_bytes(), original)
-        self.assertEqual(stat.S_IMODE(backups[0].stat().st_mode), 0o600)
+        if os.name != "nt":
+            self.assertEqual(stat.S_IMODE(backups[0].stat().st_mode), 0o600)
         self.success(self.run_register("--check"))
         before = self.snapshot()
         self.success(self.run_register())
@@ -60,13 +66,15 @@ class RegistrationTests(unittest.TestCase):
         self.success(self.run_register())
         self.success(self.run_register("--check"))
         self.assertTrue(self.config.exists())
-        self.assertEqual(stat.S_IMODE(self.config.stat().st_mode), 0o600)
+        if os.name != "nt":
+            self.assertEqual(stat.S_IMODE(self.config.stat().st_mode), 0o600)
 
     def test_relative_codex_home_writes_absolute_config_paths(self):
         relative_home = Path(self.tmp.name) / "relative home"
         install_env = dict(self.env, CODEX_HOME=str(relative_home))
         subprocess.run(
-            ["bash", str(ROOT / "scripts/link.sh"), "--target", "codex"],
+            [sys.executable, str(ROOT / "scripts/install.py"), "--target", "codex",
+             "--mode", "copy"],
             env=install_env, capture_output=True, check=True,
         )
         result = subprocess.run(
@@ -75,8 +83,14 @@ class RegistrationTests(unittest.TestCase):
             cwd=self.tmp.name, env=self.env, capture_output=True, text=True,
         )
         self.success(result)
-        config = (relative_home / "config.toml").read_text()
-        self.assertIn(str(relative_home / "agents/architect.toml"), config)
+        sys.path.insert(0, str(ROOT / "scripts"))
+        try:
+            from setup_support import toml_parser
+            parsed = toml_parser().loads((relative_home / "config.toml").read_text())
+        finally:
+            sys.path.pop(0)
+        configured = Path(parsed["agents"]["architect"]["config_file"])
+        self.assertEqual(configured, relative_home / "agents/architect.toml")
 
     def test_foreign_role_refused_without_any_changes(self):
         self.config.write_text('[agents.architect]\ndescription="Mine"\nconfig_file="/foreign.toml"\n')
@@ -100,6 +114,7 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual(self.run_register().returncode, 1)
         self.assertEqual(self.snapshot(), before)
 
+    @unittest.skipIf(os.name == "nt", "unprivileged Windows symlink creation is unavailable")
     def test_config_symlink_is_not_followed(self):
         other = self.home / "other.toml"
         other.write_text('# unrelated\n')
@@ -140,6 +155,66 @@ class RegistrationTests(unittest.TestCase):
 
         self.assertEqual(self.config.read_bytes(), newer)
         self.assertEqual(list(self.home.glob("config.toml.mario-*")), [])
+
+    def test_crlf_and_utf8_bom_prefix_are_preserved(self):
+        original = b'\xef\xbb\xbfmodel = "before"\r\n# keep bytes\r\n'
+        self.config.write_bytes(original)
+        self.success(self.run_register())
+        updated = self.config.read_bytes()
+        self.assertTrue(updated.startswith(original))
+        self.assertNotIn(b"\n\n[agents", updated)
+        self.assertIn(b"\r\n\r\n[agents", updated)
+        self.success(self.run_register("--check"))
+
+    def test_read_only_config_is_rejected_without_changing_mode_or_bytes(self):
+        original = b'model = "readonly"\n'
+        self.config.write_bytes(original)
+        self.config.chmod(stat.S_IREAD)
+        before_mode = self.config.stat().st_mode
+        try:
+            result = self.run_register()
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertEqual(self.config.read_bytes(), original)
+            self.assertEqual(self.config.stat().st_mode, before_mode)
+        finally:
+            self.config.chmod(stat.S_IREAD | stat.S_IWRITE)
+
+    def test_existing_source_path_registrations_remain_valid(self):
+        sections = []
+        for name in ("architect", "implementer", "code-reviewer", "mario-scribe"):
+            sections.extend((
+                f"[agents.{json.dumps(name)}]",
+                'description = "existing valid Mario role"',
+                "config_file = " + json.dumps(str(ROOT / "codex/agents" / f"{name}.toml")),
+                "",
+            ))
+        self.config.write_text("\n".join(sections), encoding="utf-8")
+        self.success(self.run_register("--check"))
+        before = self.config.read_bytes()
+        self.success(self.run_register())
+        self.assertEqual(self.config.read_bytes(), before)
+
+    def test_non_bmp_unicode_home_produces_valid_toml_strings(self):
+        unicode_home = Path(self.tmp.name) / "Codex 用户 🚀"
+        env = dict(self.env, CODEX_HOME=str(unicode_home))
+        subprocess.run(
+            [sys.executable, str(ROOT / "scripts/install.py"), "--target", "codex",
+             "--mode", "copy"],
+            env=env, capture_output=True, check=True,
+        )
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/register_codex.py")],
+            env=env, capture_output=True, text=True,
+        )
+        self.success(result)
+        raw = (unicode_home / "config.toml").read_bytes()
+        self.assertIn("🚀".encode("utf-8"), raw)
+        self.assertNotIn(b"\\ud83d", raw.lower())
+        result = subprocess.run(
+            [sys.executable, str(ROOT / "scripts/register_codex.py"), "--check"],
+            env=env, capture_output=True, text=True,
+        )
+        self.success(result)
 
 
 if __name__ == '__main__':

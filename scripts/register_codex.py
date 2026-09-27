@@ -7,9 +7,27 @@ import json
 import os
 from pathlib import Path
 import stat
+import sys
 import tempfile
 
-from doctor import AGENTS as AGENT_NAMES, CODEX, ROOT, toml_parser
+SCRIPT_DIR = str(Path(__file__).resolve().parent)
+if SCRIPT_DIR not in sys.path:
+    sys.path.insert(0, SCRIPT_DIR)
+
+from setup_support import (
+    AGENT_NAMES,
+    CODEX,
+    ROOT,
+    SetupError,
+    is_readonly,
+    is_reparse,
+    load_receipt,
+    reject_redirected_path as reject_setup_redirect,
+    same_target,
+    selected_receipt_files,
+    sha256_file,
+    toml_parser,
+)
 
 
 class RegistrationError(Exception):
@@ -26,34 +44,42 @@ def parse_toml(parser, text: str, label: str) -> dict:
     return value
 
 
-def same_file_target(path: Path, expected: Path) -> bool:
-    try:
-        return path.resolve(strict=False) == expected.resolve(strict=False)
-    except (OSError, RuntimeError):
-        return False
-
-
 def reject_redirected_path(path: Path) -> None:
-    current = path
-    while current != current.parent:
-        if current.is_symlink():
-            raise RegistrationError(f"Refusing redirected path: {current}")
-        current = current.parent
+    try:
+        reject_setup_redirect(path)
+    except SetupError as exc:
+        raise RegistrationError(str(exc)) from None
 
 
-def installed_agents(codex_home: Path, parser) -> dict[str, tuple[Path, str]]:
-    result: dict[str, tuple[Path, str]] = {}
+def installed_agents(codex_home: Path, parser) -> dict[str, tuple[Path, Path, str]]:
+    try:
+        receipt = load_receipt(codex_home, ROOT)
+    except SetupError as exc:
+        raise RegistrationError(str(exc)) from None
+    owned = selected_receipt_files(receipt, ("codex",))
+    result: dict[str, tuple[Path, Path, str]] = {}
     for name in AGENT_NAMES:
         model = CODEX[name][0]
         source = ROOT / "codex/agents" / f"{name}.toml"
         installed = codex_home / "agents" / f"{name}.toml"
         try:
-            linked = installed.is_symlink() and same_file_target(installed, source)
+            linked = installed.is_symlink() and same_target(installed, source)
         except OSError:
             linked = False
-        if not linked:
+        metadata = owned.get(f"agents/{name}.toml")
+        copied = False
+        if metadata is not None:
+            try:
+                copied = (
+                    not installed.is_symlink() and installed.is_file() and
+                    metadata["source"] == f"codex/agents/{name}.toml" and
+                    metadata["sha256"] == sha256_file(installed) == sha256_file(source)
+                )
+            except OSError:
+                copied = False
+        if not linked and not copied:
             raise RegistrationError(
-                f"Installed agent link is missing or foreign: {installed}"
+                f"Installed agent binding is missing, stale, or foreign: {installed}"
             )
         try:
             data = parse_toml(parser, source.read_text(encoding="utf-8"),
@@ -64,7 +90,7 @@ def installed_agents(codex_home: Path, parser) -> dict[str, tuple[Path, str]]:
         if (data.get("name") != name or data.get("model") != model
                 or not isinstance(description, str) or not description.strip()):
             raise RegistrationError(f"Source binding metadata mismatch: {name}")
-        result[name] = (installed, description.strip())
+        result[name] = (installed, source, description.strip())
     return result
 
 
@@ -76,15 +102,16 @@ def configured_path(value: str, codex_home: Path) -> Path:
 def proposed_config(
     original: str,
     parsed: dict,
-    bindings: dict[str, tuple[Path, str]],
+    bindings: dict[str, tuple[Path, Path, str]],
     codex_home: Path,
+    newline: str = "\n",
 ) -> tuple[str, list[str]]:
     agents = parsed.get("agents", {})
     if not isinstance(agents, dict):
         raise RegistrationError("Existing [agents] setting conflicts with role registration.")
 
     missing: list[str] = []
-    for name, (installed, _) in bindings.items():
+    for name, (installed, source, _) in bindings.items():
         if name not in agents:
             missing.append(name)
             continue
@@ -97,24 +124,26 @@ def proposed_config(
             raise RegistrationError(f"Existing agent model override is ambiguous: {name}")
         if (not isinstance(description, str) or not description.strip()
                 or not isinstance(config_file, str)
-                or not same_file_target(configured_path(config_file, codex_home),
-                                        ROOT / "codex/agents" / f"{name}.toml")):
+                or not any(
+                    same_target(configured_path(config_file, codex_home), allowed)
+                    for allowed in (installed, source)
+                )):
             raise RegistrationError(f"Existing agent registration conflicts: {name}")
 
     if not missing:
         return original, missing
 
     suffix = ""
-    if original and not original.endswith("\n"):
-        suffix += "\n"
+    if original and not original.endswith(("\n", "\r")):
+        suffix += newline
     if original:
-        suffix += "\n"
+        suffix += newline
     for name in missing:
-        installed, description = bindings[name]
+        installed, _, description = bindings[name]
         suffix += (
-            f'[agents.{json.dumps(name)}]\n'
-            f'description = {json.dumps(description)}\n'
-            f'config_file = {json.dumps(str(installed))}\n\n'
+            f'[agents.{json.dumps(name, ensure_ascii=False)}]{newline}'
+            f'description = {json.dumps(description, ensure_ascii=False)}{newline}'
+            f'config_file = {json.dumps(str(installed), ensure_ascii=False)}{newline}{newline}'
         )
     return original + suffix, missing
 
@@ -132,7 +161,8 @@ def reserve_backup(config: Path, content: bytes) -> Path:
                 stream.write(content)
                 stream.flush()
                 os.fsync(stream.fileno())
-            os.chmod(candidate, 0o600)
+            if os.name != "nt":
+                os.chmod(candidate, 0o600)
             return candidate
         except BaseException:
             try:
@@ -154,7 +184,8 @@ def atomic_replace(
     fd, temporary = tempfile.mkstemp(prefix=config.name + ".mario-", dir=config.parent)
     temp_path = Path(temporary)
     try:
-        os.fchmod(fd, mode)
+        if os.name != "nt":
+            os.fchmod(fd, mode)
         with os.fdopen(fd, "wb") as stream:
             stream.write(content)
             stream.flush()
@@ -197,8 +228,10 @@ def main() -> int:
 
     try:
         reject_redirected_path(codex_home)
-        if config.is_symlink():
-            raise RegistrationError(f"Refusing symlink config: {config}")
+        if codex_home.exists() and not codex_home.is_dir():
+            raise RegistrationError(f"Codex home is not a directory: {codex_home}")
+        if config.is_symlink() or is_reparse(config):
+            raise RegistrationError(f"Refusing redirected config: {config}")
         parser_module = toml_parser()
         if parser_module is None:
             raise RegistrationError(
@@ -210,7 +243,8 @@ def main() -> int:
                 raise RegistrationError(f"Config path is not a regular file: {config}")
             try:
                 original_bytes = config.read_bytes()
-                original = original_bytes.decode("utf-8")
+                bom = original_bytes.startswith(b"\xef\xbb\xbf")
+                original = original_bytes.decode("utf-8-sig")
             except (OSError, UnicodeError):
                 raise RegistrationError("Cannot read Codex config as UTF-8.") from None
             config_stat = config.stat()
@@ -218,15 +252,26 @@ def main() -> int:
             identity = (config_stat.st_dev, config_stat.st_ino, config_stat.st_size,
                         config_stat.st_mtime_ns)
             existed = True
+            if is_readonly(config):
+                raise RegistrationError(f"Codex config is read-only: {config}")
         else:
             original_bytes = b""
             original = ""
+            bom = False
             mode = 0o600
             identity = None
             existed = False
 
         parsed = parse_toml(parser_module, original, "Codex config") if original else {}
-        proposed, missing = proposed_config(original, parsed, bindings, codex_home)
+        if b"\r\n" in original_bytes:
+            newline = "\r\n"
+        elif b"\r" in original_bytes and b"\n" not in original_bytes:
+            newline = "\r"
+        else:
+            newline = "\n" if original_bytes else os.linesep
+        proposed, missing = proposed_config(
+            original, parsed, bindings, codex_home, newline,
+        )
         parse_toml(parser_module, proposed, "Proposed Codex config")
 
         if args.check:
@@ -251,9 +296,9 @@ def main() -> int:
             if backup is not None:
                 backup.unlink(missing_ok=True)
             raise RegistrationError("Codex config changed during registration; retry.")
-        atomic_replace(
-            config, proposed.encode("utf-8"), mode, existed, identity, original_bytes
-        )
+        prefix = b"\xef\xbb\xbf" if bom else b""
+        atomic_replace(config, prefix + proposed.encode("utf-8"), mode,
+                       existed, identity, original_bytes)
         if backup:
             print(f"BACKED UP {config} to {backup}")
         print("REGISTERED " + ", ".join(missing))

@@ -32,7 +32,13 @@ project's own instructions and the user's current scope control its implementati
   original copy, assets, and identity.
 - Carry one bounded handoff between roles: route and slice, agreed scope and NOT list, files to
   touch, baseline, exact **Verify by** step, required artifacts, constraints, and unresolved
-  decisions. Update it when the user changes scope.
+  decisions. Include the resolved absolute Mario root; a delegated child may not inherit plugin
+  environment variables. Report conflicting explicit roots rather than choosing one silently.
+  Update the handoff when the user changes scope.
+- Before editing an existing file, inspect and preserve its encoding, BOM, newline convention,
+  and mode. Use a byte-preserving edit or an explicitly newline-aware tool and verify the result;
+  do not rely on a generic editor or `sed -i` across platforms. Never bulk-normalize downstream
+  source files as part of an unrelated slice.
 
 ## Phase 1 — Roadmap and intent (greenfield)
 

@@ -5,9 +5,11 @@ description: Kickoff gate for a new project, app, site, or major greenfield feat
 
 # start-project
 
-**Read `METHOD.md` at the mario root now, and follow it exactly.** Resolve the root from
-`$CLAUDE_PLUGIN_ROOT`, the project's `.mario/` pointer, or the current checkout if it contains
-`METHOD.md` and `roles/`. If none resolves, ask for the mario path.
+**Read `METHOD.md` at the Mario root now, and follow it exactly.** Resolve the root from an
+explicit absolute path in the coordinator handoff or project instructions, then
+`$CLAUDE_PLUGIN_ROOT` when available, the project's `.mario/` pointer, or the current checkout if
+it contains `METHOD.md` and `roles/`. Do not search the disk or assume a fixed plugin cache
+directory. Report conflicting explicit roots. If none resolves, ask for the Mario path.
 
 `METHOD.md` is the single source of the six phases. This file is only the binding that loads it,
 and deliberately does not restate it — a second copy of the method is a second copy to drift.

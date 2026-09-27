@@ -108,3 +108,32 @@
   pages after uncertain writes.
 - Revisit if: users need several interchangeable note providers. A provider router is an idea
   only; this slice does not implement one.
+
+## 2026-09-26 — Native setup uses Python and explicit copy ownership
+
+- Chose: a Python 3.10+ installer shared by macOS, native Windows, and Linux. Auto mode uses
+  symlinks on POSIX and managed copies on Windows; a versioned per-home receipt records the exact
+  source and installed hash for every copied file.
+- Over: requiring Bash/WSL on Windows, adopting same-content files, mutating foreign entries, or
+  treating plugin installation as proof of home-link installation or runtime enablement.
+- Because: setup must work without elevation while preserving other toolkits and user edits.
+  Hash-checked ownership permits safe refresh/uninstall and makes uncertain interruption fail
+  closed rather than guessing.
+- Limit: the receipt is trusted local historical inventory. Its hashes verify consistency, not
+  provenance; defending against deliberate local receipt tampering inside the allowed dynamic
+  `skills/start-project` namespace would require separately protected provenance.
+- Portability: receipt destinations must remain distinct after case folding. Backslash or repeated
+  separators and components ending in a space or dot are rejected before any mutation so one
+  receipt cannot name the same destination twice on common Windows or macOS filesystems.
+- Revisit if: a client provides a native package lifecycle with equivalent ownership guarantees.
+
+## 2026-09-26 — Resolve and diagnose each Mario root independently
+
+- Chose: explicit handoff/project path first, then available plugin root, `.mario`, and current
+  checkout. Doctor validates its checkout, a supplied Claude plugin root, and a project-referenced
+  checkout as separate roots and reports plugin version without claiming enablement.
+- Over: fixed cache paths, broad disk searches, requiring `.mario`, or comparing every valid
+  project pointer to the checkout that happens to run doctor.
+- Because: delegated children may lack plugin environment variables, and native plugin caches can
+  legitimately differ from the checkout a project names.
+- Revisit if: harnesses expose a portable authenticated root identifier to delegated roles.

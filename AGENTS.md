@@ -16,6 +16,11 @@ reads a root instruction file starts here.
 Everything else is a per-harness binding. `agents/`, `skills/`, and `commands/` are Claude Code
 wiring. The project-level portable pointer is `.mario/AGENTS.md`. Use the binding for your harness.
 
+Resolve this Mario root from an explicit absolute path in the coordinator handoff or project
+instructions first, then an available plugin root, the project's `.mario` pointer, or the current
+checkout. Pass the resolved absolute root to delegated children. Do not search the disk or assume
+a fixed plugin cache directory. Report conflicting explicit roots instead of choosing silently.
+
 **Codex:** also read `codex/AGENTS.md` at this mario root. It binds the shared roles to
 explicit Codex models and native subagent handoffs.
 

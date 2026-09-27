@@ -1,9 +1,12 @@
 # Codex binding
 
-Read `METHOD.md` and `roles/*.md` at the mario root first. Resolve that root from the
-project's `.mario/` symlink, or the current checkout when it contains this binding,
-`METHOD.md`, and `roles/`. If neither exists, request the mario checkout path; do not
-invent role instructions. This file supplies routing, not a second method.
+Read `METHOD.md` and `roles/*.md` at the Mario root first. Resolve that root from an explicit
+absolute path in the coordinator handoff or project instructions, then an available plugin root,
+the project's `.mario/` pointer, or the current checkout when it contains this binding,
+`METHOD.md`, and `roles/`. Delegated children may not inherit plugin environment variables. Do
+not search the disk or assume a fixed plugin cache directory. Report conflicting explicit roots.
+If none resolves, request the Mario checkout path; do not invent role instructions. This file
+supplies routing, not a second method.
 
 ## Model routing
 
