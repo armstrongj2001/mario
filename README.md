@@ -123,6 +123,18 @@ first. Registration doesn't guarantee dispatch; the tested client still reported
 and the explicit-model fallback in [codex/AGENTS.md](codex/AGENTS.md). `--unlink` leaves
 registrations in place; to remove them, delete the four entries whose `config_file` points here.
 
+## Update
+
+| Installed with | Update by |
+|---|---|
+| Installer on macOS/Linux (symlinks) | `git pull`, then restart the client |
+| Installer on Windows (copies) | `git pull`, then `py -3 scripts/install.py --target all`, then restart |
+| Claude plugin | `/plugin marketplace update mario`, update `mario` from `/plugin`, then restart |
+
+Confirm with `python3 scripts/doctor.py --target all` (0 FAIL). Codex registration points at the
+checkout and does not need rerunning. Changes are listed on the
+[releases page](https://github.com/armstrongj2001/mario/releases).
+
 ## Connect a project
 
 Add one line to the project's root `AGENTS.md` (or `CLAUDE.md` for Claude-only projects), keeping
