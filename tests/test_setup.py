@@ -385,6 +385,19 @@ class SetupTests(unittest.TestCase):
         self.assertFalse(self.claude.exists())
         self.assertFalse(self.codex.exists())
 
+    @unittest.skipIf(os.name == "nt", "symlink creation may require privilege")
+    def test_foreign_symlink_is_a_conflict_not_an_install(self):
+        destination = self.claude / "agents/implementer.md"
+        destination.parent.mkdir(parents=True)
+        foreign = self.base / "foreign.md"
+        foreign.write_text("foreign\n")
+        destination.symlink_to(foreign)
+        before = self.snapshot()
+        result = self.install("--target", "claude", "--mode", "copy", "--no-fable")
+        self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+        self.assertIn("Conflict", result.stderr)
+        self.assertEqual(self.snapshot(), before)
+
     def test_cross_mode_requires_uninstall(self):
         self.success(self.install("--target", "codex", "--mode", "copy"))
         self.assertEqual(

@@ -88,25 +88,12 @@
 
 ## 2026-09-27 — Native platform setup
 
-- Integrated into local main from `portability/native-platforms`: implementation `2a4b451`,
-  CI fixes `587115c`, baseline `0ff4076`. Native Python installer,
-  copy-ownership receipts, managed-copy doctor/registration, plugin and absolute project routes,
-  representation-preservation rules, platform CI, and plugin manifests at 0.9.1.
-- Windows non-admin Python 3.12 lifecycle passed on NTFS, including repeat install, registration,
-  project/plugin diagnostics, Fable switching, malformed drive-receipt rejection with outside
-  sentinel preservation, and uninstall. Final native run with `PYTHONUTF8=0`: 51 tests OK,
-  nine narrow platform skips. Local Linux passes 51 tests with one Windows-only skip.
-- Local verification: 51 tests OK with one Windows-only skip; source doctor 32 PASS, 0 FAIL;
-  shell syntax, byte representation audit, and `git diff --check` passed. Terra's drive-path
-  finding, exact receipt-mapping finding, receipt/generated destination-alias findings, and source
-  recheck finding are fixed; independent Terra review is clean. All six hosted jobs passed:
-  [Windows/macOS/Linux × Python 3.10/3.12](https://github.com/armstrongj2001/mario/actions/runs/36301310350).
-  First CI exposed legacy Windows output encoding and unresolved macOS temporary aliases;
-  both are fixed and covered. Human acceptance and harness runtime checks remain separate.
-- Root resolution now prefers an explicit absolute handoff/project path and validates checkout,
-  plugin, and project roots independently. Provider-router work remains an idea only; Notion
-  closeout behavior and all role model/tool assignments are unchanged.
-- Requested role routing: architect `/root/notion_plan` (Astra), implementer
-  `/root/refresh_roadmap` (Sol), reviewer `/root/review_claude_fallback` (Terra).
-  Backend identities were not attested. Next: user/friend retries the native setup and reports
-  usability; do not reopen the provider-router idea or claim all harnesses were runtime-tested.
+- Shipped 0.9.1 (`2a4b451`, `587115c`): Python installer for macOS/Windows/Linux, managed copies
+  with ownership receipts on Windows, doctor/registration support for copies, plugin roots, and
+  absolute project pointers, plus representation-preservation rules for implementer/reviewer.
+- Verified: six hosted CI jobs (3 OS × Python 3.10/3.12), Windows non-admin lifecycle, independent
+  review clean. Receipts in `docs/WORKFLOW-CHECKS.md`.
+- Follow-up: foreign symlinks no longer misdetected as a Mario symlink install; README setup
+  sections condensed, ownership detail moved to `docs/DECISIONS.md`.
+- Next: user/friend retries the native setup and reports usability. Don't reopen the
+  provider-router idea or claim all harnesses were runtime-tested.

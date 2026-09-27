@@ -95,7 +95,7 @@ def architect_variant(home: Path, receipt: Receipt | None, root: Path) -> bool |
 def detect_mode(target: str, home: Path, receipt: Receipt | None, root: Path) -> str | None:
     copy_owned = bool(selected_receipt_files(receipt, (target,)))
     link_owned = any(
-        entry.destination.is_symlink()
+        owned_link(entry)
         for fable in ((False, True) if target == "claude" else (False,))
         for entry in link_manifest(target, root, home, fable)
     )

@@ -84,6 +84,8 @@
   rejects conflicting roles, backs up existing config, and rechecks before replacement.
 - Limit: unrelated concurrent writers cannot be locked out; close config editors during
   registration. This residual check-to-replace race is documented.
+- Permissions: new configs and backups are `0600` on POSIX and inherit the directory ACL on
+  Windows; existing configs keep their mode. Read-only configs are refused, never chmodded.
 - Revisit if: Codex changes its discovery mechanism. Keep configured model identity,
   runtime-exposed metadata, and backend attestation distinct.
 
@@ -122,6 +124,9 @@
 - Limit: the receipt is trusted local historical inventory. Its hashes verify consistency, not
   provenance; defending against deliberate local receipt tampering inside the allowed dynamic
   `skills/start-project` namespace would require separately protected provenance.
+- Races: paths are rechecked immediately before each mutation, but an unrelated concurrent
+  writer cannot be locked out. An interrupted run can leave unowned partial files, which are
+  reported as conflicts rather than adopted. Changing modes requires uninstalling first.
 - Portability: receipt destinations must remain distinct after case folding. Backslash or repeated
   separators and components ending in a space or dot are rejected before any mutation so one
   receipt cannot name the same destination twice on common Windows or macOS filesystems.
