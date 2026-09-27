@@ -64,10 +64,11 @@ The final bounded repeat using the direct repository path again reported a child
 result without a raw spawn event (empty-recipient wait only). It remains inconclusive;
 no path-format fix is justified by this evidence. Diagnosis stopped for this session.
 
-## 2026-09-26 native-platform receipts
+## 2026-09-27 native-platform receipts
 
-- Native Windows 11, non-admin Python 3.12 on NTFS paths with spaces: the latest 44-test snapshot
-  passed with six narrow OS-specific skips. A full native lifecycle also passed:
+- Native Windows 11, non-admin Python 3.12 on NTFS paths with spaces, `PYTHONUTF8=0`:
+  `python -m unittest discover -s tests -v` ran 51 tests, OK with nine narrow OS-specific skips.
+  A full native lifecycle also passed:
   managed-copy install and repeat, source and installed doctor, Codex registration/check/repeat,
   absolute project pointers, Fable switches, selective uninstall, and plugin-only diagnostics.
 - Windows diagnostic receipts: source **32 PASS, 0 FAIL**; installed all-target **43 PASS,
@@ -77,7 +78,15 @@ no path-format fix is justified by this evidence. Diagnosis stopped for this ses
   unchanged.
 - Local Linux after the final test additions: `python3 -m unittest discover -s tests -q` —
   **51 tests OK**, one Windows-only junction test skipped; source doctor **32 PASS, 0 FAIL**;
-  shell syntax and `git diff --check` exited 0. Focused independent re-review remains pending.
-- macOS execution and hosted CI matrix results remain pending. These Windows/Linux receipts do
-  not certify macOS, live plugin enablement, named-role dispatch, backend model identity, or a
-  human usability verdict for the new setup path.
+  shell syntax and `git diff --check` exited 0. Independent Terra review is clean, including
+  strict-ASCII output checks and focused re-review of ownership, aliases, and source rechecks.
+- [Hosted CI run 36301310350](https://github.com/armstrongj2001/mario/actions/runs/36301310350)
+  at `587115c`: all six jobs passed. Each ran `python -m unittest discover -s tests -q`
+  (51 tests) and `python scripts/doctor.py --source-only --target all` (32 PASS, 0 FAIL).
+  Python 3.10 and 3.12 both passed on Ubuntu, macOS, and Windows. Narrow OS-specific skips:
+  Linux 1, macOS 2, Windows 9; POSIX shell syntax checks also passed.
+- The first CI run found a Windows legacy-output encoding failure and macOS test temp roots
+  using the `/var` symlink. Shared output error handling and resolved fixture roots fixed them;
+  redirect checks remain active. Local Windows was rerun with UTF-8 mode disabled.
+- These results verify setup and diagnostics, not live plugin enablement, named-role dispatch,
+  backend model identity, or a human usability verdict for the new setup path.

@@ -35,7 +35,7 @@ records the next session can use. Installation must coexist with user configurat
 | 3 — Explicit Codex registration | Preserve user settings while registering the four named roles required by the tested client. | Config-preservation regression tests, independent review, live registration check, fresh named architect dispatch. | Complete; named dispatch blocked by client runtime |
 | 4 — Current Claude models and Fable opt-in | Pin the four default Claude roles to their current models and offer Fable 5.1 as an explicit architect choice without changing the Codex assignments. | Installer regression tests; source and installed binding diagnostics; dispatched reviewer transcript. | Complete |
 | 5 — Optional Notion session notes | Let a project explicitly opt in to local-first Notion closeout notes with verified receipts and duplicate-safe retries, without changing role tools or requiring Notion. | Documentation checks; walk disabled, success, missing connector, incompatible schema, known-page retry, uncertain-create recovery, and ambiguous-match cases; live connected first run. | Agent first run passed; human acceptance pending |
-| 6 — Native platform setup | Install, diagnose, register, refresh, and remove owned Mario bindings on macOS, native Windows, and Linux while accepting plugin and absolute project routes. | Native unit/integration matrix; source and installed doctor; Windows non-admin lifecycle; independent review; platform first runs. | Implemented; Windows lifecycle passed, macOS/CI/review pending |
+| 6 — Native platform setup | Install, diagnose, register, refresh, and remove owned Mario bindings on macOS, native Windows, and Linux while accepting plugin and absolute project routes. | Native unit/integration matrix; source and installed doctor; Windows non-admin lifecycle; independent review; platform first runs. | Complete; six native CI jobs and independent review passed; human acceptance pending |
 
 ## Acceptance boundaries
 
@@ -44,15 +44,19 @@ records the next session can use. Installation must coexist with user configurat
 - Human acceptance remains pending until a person tries the intended path and gives a verdict.
 - Each implementation slice receives independent review before the next starts.
 
-## Current verification (2026-09-26)
+## Current verification (2026-09-27)
 
 - `python3 -m unittest discover -s tests -q` — 51 tests OK locally; one Windows-only test skipped.
-- Native Windows Python 3.12 snapshot — 44 tests OK with six narrow platform skips; full
+- Native Windows Python 3.12, UTF-8 mode disabled — 51 tests OK with nine narrow platform skips; full
   non-admin install/doctor/register/project/plugin/Fable/uninstall lifecycle passed.
 - Windows source doctor — 32 PASS, 0 FAIL; installed all-target doctor — 43 PASS, 0 FAIL;
   project all-target — 47 PASS, 0 FAIL; plugin-only Claude project — 46 PASS, 0 FAIL.
 - Final source doctor — 32 PASS, 0 FAIL; `bash -n scripts/link.sh` and `git diff --check` — exit
-  0. Hosted macOS CI and focused independent re-review remain pending.
+  0. Independent Terra review is clean.
+- [Hosted native CI](https://github.com/armstrongj2001/mario/actions/runs/36301310350) at
+  `587115c` — all six jobs passed on Windows, macOS, and Linux with Python 3.10 and 3.12.
+  Each ran 51 tests and source diagnostics; platform-specific skips: Windows 9, macOS 2,
+  Linux 1. No whole-platform skips.
 - `python3 scripts/register_codex.py --check` — PASS all four Codex agents are registered.
 - Optional Notion first run — create/read-back passed; repeat closeout reused the saved page ID,
   and an exact-title query found one page. Human acceptance remains pending.

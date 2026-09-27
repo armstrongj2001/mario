@@ -86,21 +86,27 @@
   and cross-provider review (e.g. Claude builds, Codex reviews). Muse not yet in the repo.
 - External note: Claude-labelled Notion session note; status in the ignored local receipt.
 
-## 2026-09-26 — Native platform setup
+## 2026-09-27 — Native platform setup
 
-- In progress on `portability/native-platforms` from `0ff4076`: native Python installer,
+- Integrated into local main from `portability/native-platforms`: implementation `2a4b451`,
+  CI fixes `587115c`, baseline `0ff4076`. Native Python installer,
   copy-ownership receipts, managed-copy doctor/registration, plugin and absolute project routes,
   representation-preservation rules, platform CI, and plugin manifests at 0.9.1.
 - Windows non-admin Python 3.12 lifecycle passed on NTFS, including repeat install, registration,
   project/plugin diagnostics, Fable switching, malformed drive-receipt rejection with outside
-  sentinel preservation, and uninstall. The final suite passed 44 tests with six narrow Windows
-  skips. Local Linux passes 51 tests with one Windows-only skip.
+  sentinel preservation, and uninstall. Final native run with `PYTHONUTF8=0`: 51 tests OK,
+  nine narrow platform skips. Local Linux passes 51 tests with one Windows-only skip.
 - Local verification: 51 tests OK with one Windows-only skip; source doctor 32 PASS, 0 FAIL;
   shell syntax, byte representation audit, and `git diff --check` passed. Terra's drive-path
   finding, exact receipt-mapping finding, receipt/generated destination-alias findings, and source
-  recheck finding are fixed; focused re-review, hosted
-  macOS/Linux/Windows CI, and human acceptance remain pending. Do not claim native macOS
-  certification yet.
+  recheck finding are fixed; independent Terra review is clean. All six hosted jobs passed:
+  [Windows/macOS/Linux × Python 3.10/3.12](https://github.com/armstrongj2001/mario/actions/runs/36301310350).
+  First CI exposed legacy Windows output encoding and unresolved macOS temporary aliases;
+  both are fixed and covered. Human acceptance and harness runtime checks remain separate.
 - Root resolution now prefers an explicit absolute handoff/project path and validates checkout,
   plugin, and project roots independently. Provider-router work remains an idea only; Notion
   closeout behavior and all role model/tool assignments are unchanged.
+- Requested role routing: architect `/root/notion_plan` (Astra), implementer
+  `/root/refresh_roadmap` (Sol), reviewer `/root/review_claude_fallback` (Terra).
+  Backend identities were not attested. Next: user/friend retries the native setup and reports
+  usability; do not reopen the provider-router idea or claim all harnesses were runtime-tested.
