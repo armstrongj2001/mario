@@ -20,6 +20,7 @@ from setup_support import (
     ROLES,
     SetupError,
     absolute_path,
+    configure_safe_stdio,
     copy_manifest,
     home_for,
     link_manifest,
@@ -334,6 +335,7 @@ def check_project(report: Report, project: Path, target: str) -> None:
 
 
 def main() -> int:
+    configure_safe_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--target", choices=("claude", "codex", "all"), default="all")
     parser.add_argument("--source-only", action="store_true")

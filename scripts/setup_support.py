@@ -10,6 +10,7 @@ import os
 from pathlib import Path, PurePosixPath
 import re
 import stat
+import sys
 from typing import Any, Iterable
 
 
@@ -55,6 +56,18 @@ FIXED_TARGETS = {
 
 class SetupError(Exception):
     """A setup state is unsafe or inconsistent."""
+
+
+def configure_safe_stdio() -> None:
+    """Keep the active console encoding and escape characters it cannot represent."""
+    for stream in (sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is None:
+            continue
+        try:
+            reconfigure(errors="backslashreplace")
+        except (OSError, ValueError):
+            continue
 
 
 @dataclass(frozen=True)

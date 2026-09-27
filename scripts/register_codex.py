@@ -19,6 +19,7 @@ from setup_support import (
     CODEX,
     ROOT,
     SetupError,
+    configure_safe_stdio,
     is_readonly,
     is_reparse,
     load_receipt,
@@ -214,6 +215,7 @@ def unchanged(config: Path, existed: bool, identity, content: bytes) -> bool:
 
 
 def main() -> int:
+    configure_safe_stdio()
     parser = argparse.ArgumentParser(description=__doc__)
     modes = parser.add_mutually_exclusive_group()
     modes.add_argument("--dry", action="store_true", help="validate and preview")

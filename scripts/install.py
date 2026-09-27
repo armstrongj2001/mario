@@ -20,6 +20,7 @@ from setup_support import (
     Receipt,
     SetupError,
     absolute_path,
+    configure_safe_stdio,
     copy_manifest,
     home_for,
     is_reparse,
@@ -406,6 +407,7 @@ def write_receipts(plans: list[Plan], root: Path) -> None:
 
 
 def main() -> int:
+    configure_safe_stdio()
     args = usage_parser().parse_args()
     root = absolute_path(ROOT)
     selected_targets = target_names(args.target)

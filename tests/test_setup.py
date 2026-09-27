@@ -21,7 +21,7 @@ class SetupTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix="mario setup ")
         self.addCleanup(self.tmp.cleanup)
-        self.base = Path(self.tmp.name)
+        self.base = Path(self.tmp.name).resolve()
         self.claude = self.base / "claude home"
         self.codex = self.base / "codex home"
         native_home = self.base / "native home"
@@ -449,13 +449,28 @@ class SetupTests(unittest.TestCase):
         copied = self.copy_checkout("source 🚀 with spaces")
         claude = self.base / "Claude 用户 🚀"
         codex = self.base / "Codex 用户 🚀"
-        env = dict(self.env, CLAUDE_HOME=str(claude), CODEX_HOME=str(codex))
+        env = dict(
+            self.env,
+            CLAUDE_HOME=str(claude),
+            CODEX_HOME=str(codex),
+            PYTHONUTF8="0",
+            PYTHONIOENCODING="ascii:strict",
+        )
         self.success(self.install("--target", "all", "--mode", "copy", root=copied, env=env))
         self.assertEqual(
             (codex / "agents/architect.toml").read_bytes(),
             (copied / "codex/agents/architect.toml").read_bytes(),
         )
         self.success(self.doctor("--target", "all", root=copied, env=env))
+        (codex / "config.toml").write_text('model = "user"\n', encoding="utf-8")
+        registered = subprocess.run(
+            [sys.executable, str(copied / "scripts/register_codex.py")],
+            env=env,
+            capture_output=True,
+            text=True,
+        )
+        self.success(registered)
+        self.assertIn("\\U0001f680", registered.stdout)
 
     def test_same_home_receipt_merges_both_targets(self):
         shared = self.base / "shared home"

@@ -16,7 +16,8 @@ class RegistrationTests(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.TemporaryDirectory(prefix="mario registration ")
         self.addCleanup(self.tmp.cleanup)
-        self.home = Path(self.tmp.name) / "codex home"
+        self.base = Path(self.tmp.name).resolve()
+        self.home = self.base / "codex home"
         self.env = dict(os.environ, CODEX_HOME=str(self.home))
         subprocess.run(
             [sys.executable, str(ROOT / "scripts/install.py"), "--target", "codex",
@@ -70,7 +71,7 @@ class RegistrationTests(unittest.TestCase):
             self.assertEqual(stat.S_IMODE(self.config.stat().st_mode), 0o600)
 
     def test_relative_codex_home_writes_absolute_config_paths(self):
-        relative_home = Path(self.tmp.name) / "relative home"
+        relative_home = self.base / "relative home"
         install_env = dict(self.env, CODEX_HOME=str(relative_home))
         subprocess.run(
             [sys.executable, str(ROOT / "scripts/install.py"), "--target", "codex",
@@ -80,7 +81,7 @@ class RegistrationTests(unittest.TestCase):
         result = subprocess.run(
             [sys.executable, str(ROOT / "scripts/register_codex.py"),
              "--codex-home", "relative home"],
-            cwd=self.tmp.name, env=self.env, capture_output=True, text=True,
+            cwd=self.base, env=self.env, capture_output=True, text=True,
         )
         self.success(result)
         sys.path.insert(0, str(ROOT / "scripts"))
@@ -195,7 +196,7 @@ class RegistrationTests(unittest.TestCase):
         self.assertEqual(self.config.read_bytes(), before)
 
     def test_non_bmp_unicode_home_produces_valid_toml_strings(self):
-        unicode_home = Path(self.tmp.name) / "Codex 用户 🚀"
+        unicode_home = self.base / "Codex 用户 🚀"
         env = dict(self.env, CODEX_HOME=str(unicode_home))
         subprocess.run(
             [sys.executable, str(ROOT / "scripts/install.py"), "--target", "codex",
